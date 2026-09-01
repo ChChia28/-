@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#EFEFEA">
+<title>鸽了吗</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="鸽了吗">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#EFEFEA; --card:#FFFFFF; --ink:#0E1013; --ink2:#3A3D44; --sub:#9A9CA1;
+  --lime:#D6FF3F; --limeDeep:#B9E521; --dark:#101216; --soft:#E4E4DE; --line:#EDEDE8;
+  --r:30px;
+  --sh:0 22px 44px -26px rgba(14,16,19,.45), 0 3px 10px rgba(14,16,19,.05);
+  --shHi:0 30px 60px -28px rgba(14,16,19,.55), 0 4px 14px rgba(14,16,19,.07);
+}
+html,body{margin:0;padding:0;background:#EFEFEA;color-scheme:light}
+body{background:var(--bg);color:var(--ink);overscroll-behavior-y:none;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.app{max-width:440px;margin:0 auto;min-height:100vh;padding:26px 18px 150px;position:relative;overflow-x:hidden}
+button{font-family:inherit;border:0;background:none;cursor:pointer;color:inherit}
+input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
+::-webkit-scrollbar{width:0;height:0}
+.hero{position:relative;padding:14px 6px 26px;margin-bottom:4px}
+.ghost{position:absolute;right:-6px;top:-34px;font-size:150px;font-weight:800;letter-spacing:-.08em;line-height:1;color:#DFDFD8;user-select:none;pointer-events:none}
+.hero h1{position:relative;font-size:44px;font-weight:800;letter-spacing:-.045em;line-height:.98;margin:0}
+.hero .meta{position:relative;margin-top:12px;font-size:13.5px;color:var(--sub);font-weight:500}
+.hero .meta b{color:var(--ink);font-weight:700}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:22px}
+.stats{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border-radius:24px;box-shadow:var(--sh);padding:16px 14px}
+.stat .n{font-size:32px;font-weight:800;letter-spacing:-.05em;line-height:1}
+.stat .n small{font-size:15px;font-weight:700;color:var(--sub);letter-spacing:0}
+.stat .l{margin-top:8px;font-size:11px;color:var(--sub);font-weight:600;line-height:1.3}
+.stat.on{background:var(--lime);box-shadow:var(--shHi)}
+.stat.on .l{color:#4E5A16}
+.roast{position:relative;background:var(--dark);color:#fff;border-radius:var(--r);padding:24px 22px;box-shadow:var(--shHi);margin-bottom:16px}
+.roast .tag{display:inline-block;background:var(--lime);color:#12140F;font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px}
+.roast p{margin:14px 0 0;font-size:20px;line-height:1.42;font-weight:700;letter-spacing:-.02em}
+.roast .brain{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.13);font-size:12.5px;line-height:1.6;color:#B7BAC0}
+.roast .brain b{color:var(--lime);font-weight:700}
+.roast.calm{background:var(--card);color:var(--ink)}
+.roast.calm .tag{background:var(--soft);color:var(--ink2)}
+.roast.calm .brain{border-color:var(--line);color:var(--sub)}
+.roast.calm .brain b{color:var(--ink)}
+.shead{display:flex;align-items:baseline;justify-content:space-between;margin:26px 6px 12px}
+.shead h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-.03em}
+.shead span{font-size:12.5px;color:var(--sub);font-weight:600}
+.list{display:flex;flex-direction:column;gap:12px}
+.task{position:relative;background:var(--card);border-radius:26px;box-shadow:var(--sh);padding:18px;display:flex;gap:14px;align-items:center;transition:transform .16s ease}
+.task:active{transform:scale(.985)}
+.task .ico{width:46px;height:46px;flex:0 0 46px;border-radius:16px;background:var(--soft);display:grid;place-items:center;font-size:22px}
+.task .mid{flex:1;min-width:0}
+.task .tt{font-size:16.5px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task .ts{margin-top:5px;font-size:12px;color:var(--sub);font-weight:500}
+.task .jab{margin-top:7px;font-size:12px;color:#C2410C;font-weight:600;line-height:1.4}
+.check{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:2px solid var(--soft);display:grid;place-items:center;transition:.18s}
+.check svg{opacity:0;transform:scale(.5);transition:.18s}
+.task.done{background:#F7F7F4;box-shadow:0 8px 20px -18px rgba(14,16,19,.4)}
+.task.done .tt{color:var(--sub);text-decoration:line-through;text-decoration-thickness:2px}
+.task.done .ico{background:#EFEFEA;filter:grayscale(1);opacity:.6}
+.task.done .check{background:var(--lime);border-color:var(--lime)}
+.task.done .check svg{opacity:1;transform:scale(1)}
+.task.late{box-shadow:var(--shHi)}
+.prog{height:5px;background:var(--soft);border-radius:4px;margin-top:9px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--limeDeep);border-radius:4px}
+.empty{text-align:center;padding:44px 20px;color:var(--sub);font-size:14px;line-height:1.7}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;width:min(404px,calc(100% - 36px));
+  background:var(--dark);border-radius:26px;padding:7px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  box-shadow:0 24px 44px -18px rgba(14,16,19,.6);z-index:60}
+.nav button{padding:11px 4px;border-radius:20px;color:#8E9197;font-size:11px;font-weight:700;display:grid;gap:4px;justify-items:center;transition:.18s}
+.nav button i{font-style:normal;font-size:17px;line-height:1}
+.nav button.on{background:var(--lime);color:#12140F}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:59;width:58px;height:58px;border-radius:22px;
+  background:var(--lime);color:#12140F;font-size:30px;display:grid;place-items:center;box-shadow:0 18px 34px -12px rgba(150,190,0,.85)}
+.fab:active{transform:translateX(-50%) scale(.94)}
+.scrim{position:fixed;inset:0;background:rgba(10,11,13,.42);backdrop-filter:blur(3px);z-index:80;opacity:0;pointer-events:none;transition:.22s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;transform:translateX(-50%) translateY(102%);bottom:0;width:min(440px,100%);
+  background:var(--bg);border-radius:34px 34px 0 0;z-index:81;padding:12px 18px calc(26px + env(safe-area-inset-bottom));
+  max-height:90vh;overflow-y:auto;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.sheet.on{transform:translateX(-50%) translateY(0)}
+.grab{width:42px;height:5px;border-radius:4px;background:#D5D5CE;margin:6px auto 18px}
+.sheet h3{margin:0 4px 16px;font-size:26px;font-weight:800;letter-spacing:-.04em}
+.field{background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:16px 18px;margin-bottom:12px}
+.field label{display:block;font-size:11.5px;color:var(--sub);font-weight:700;margin-bottom:8px}
+.field input,.field textarea{width:100%;border:0;outline:0;background:transparent;font-size:17px;font-weight:600}
+.field textarea{resize:none;font-weight:500;font-size:15px;line-height:1.6;min-height:66px}
+.field input::placeholder,.field textarea::placeholder{color:#C4C5C0;font-weight:500}
+.row{display:flex;gap:10px}
+.row .field{flex:1;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 2px 16px}
+.chip{background:var(--card);border-radius:18px;padding:10px 14px;font-size:13.5px;font-weight:600;box-shadow:0 6px 16px -12px rgba(14,16,19,.5)}
+.chip:active{background:var(--lime)}
+.chip.on{background:var(--dark);color:#fff}
+.btn{width:100%;padding:19px;border-radius:24px;background:var(--dark);color:#fff;font-size:16px;font-weight:700;box-shadow:var(--shHi)}
+.btn.lime{background:var(--lime);color:#12140F}
+.btn.ghost{background:transparent;color:var(--sub);box-shadow:none;font-weight:600;padding:14px}
+.btn:active{transform:scale(.985)}
+.mic{width:100%;padding:18px;border-radius:24px;background:var(--lime);color:#12140F;font-size:15px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 18px 34px -20px rgba(150,190,0,.9);margin-bottom:12px}
+.mic.rec{background:var(--dark);color:#fff;animation:pulse 1.1s infinite}
+@keyframes pulse{50%{opacity:.62}}
+.hint{font-size:12px;color:var(--sub);line-height:1.6;margin:0 6px 16px}
+.stepper{display:flex;align-items:center;gap:16px}
+.stepper button{width:44px;height:44px;border-radius:16px;background:var(--soft);font-size:22px;display:grid;place-items:center}
+.stepper .v{font-size:38px;font-weight:800;letter-spacing:-.05em;min-width:70px;text-align:center}
+.picwrap{position:relative;margin-bottom:12px}
+.picwrap img{width:100%;border-radius:22px;display:block;box-shadow:var(--sh)}
+.picwrap .rm{position:absolute;top:10px;right:10px;background:rgba(14,16,19,.72);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px}
+.upload{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:16px 18px;margin-bottom:12px;font-size:14.5px;font-weight:600}
+.upload .p{width:34px;height:34px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-size:16px}
+.seg{display:flex;gap:6px;background:var(--card);border-radius:22px;padding:6px;box-shadow:var(--sh);margin-bottom:16px}
+.seg button{flex:1;padding:12px 6px;border-radius:17px;font-size:13.5px;font-weight:700;color:var(--sub)}
+.seg button.on{background:var(--dark);color:#fff}
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:end;margin-bottom:18px}
+.pod{background:var(--card);border-radius:24px;box-shadow:var(--sh);padding:16px 10px;text-align:center}
+.pod .av{font-size:26px}
+.pod .nm{margin-top:8px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod .pt{margin-top:4px;font-size:17px;font-weight:800;letter-spacing:-.03em}
+.pod.first{background:var(--lime);box-shadow:var(--shHi);padding:24px 10px}
+.pod.first .av{font-size:34px}
+.rank{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:14px 18px;margin-bottom:10px}
+.rank .i{font-size:15px;font-weight:800;color:var(--sub);width:26px;letter-spacing:-.03em}
+.rank .av{font-size:22px}
+.rank .nm{flex:1;font-size:14.5px;font-weight:700;min-width:0}
+.rank .nm em{display:block;font-style:normal;font-size:11.5px;color:var(--sub);font-weight:600;margin-top:3px}
+.rank .pt{font-size:17px;font-weight:800;letter-spacing:-.03em}
+.rank.me{background:var(--dark);color:#fff}
+.rank.me .i,.rank.me .nm em{color:#8E9197}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--limeDeep);margin-right:5px;vertical-align:middle}
+.bigpoint{background:var(--dark);color:#fff;border-radius:var(--r);padding:26px 24px;box-shadow:var(--shHi);margin-bottom:14px}
+.bigpoint .n{font-size:64px;font-weight:800;letter-spacing:-.06em;line-height:1;color:var(--lime)}
+.bigpoint .l{margin-top:10px;font-size:13px;color:#9DA0A6;font-weight:600}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.badge{background:var(--card);border-radius:20px;box-shadow:var(--sh);padding:14px 6px;text-align:center;opacity:.32;filter:grayscale(1)}
+.badge.got{opacity:1;filter:none}
+.badge .e{font-size:24px}
+.badge .t{margin-top:6px;font-size:10px;font-weight:700;line-height:1.3}
+.rw{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:16px 18px;margin-bottom:10px}
+.rw .e{font-size:22px}
+.rw .m{flex:1}
+.rw .m b{font-size:15px;font-weight:700}
+.rw .m em{display:block;font-style:normal;font-size:12px;color:var(--sub);margin-top:3px;font-weight:600;line-height:1.45}
+.rw .go{background:var(--lime);color:#12140F;font-size:13px;font-weight:800;padding:10px 15px;border-radius:16px;white-space:nowrap}
+.rw .go.no{background:var(--soft);color:var(--sub)}
+.bars{display:flex;align-items:flex-end;gap:5px;height:118px;margin:18px 0 8px}
+.bars div{flex:1;background:var(--soft);border-radius:6px;min-height:5px}
+.bars div.hi{background:var(--lime)}
+.bars div.zero{background:#E9E9E3}
+.blabel{display:flex;gap:5px}
+.blabel span{flex:1;text-align:center;font-size:10px;color:var(--sub);font-weight:700;overflow:hidden}
+.wall{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wall .c{aspect-ratio:1;border-radius:18px;background:var(--soft);overflow:hidden;box-shadow:var(--sh);position:relative}
+.wall .c img{width:100%;height:100%;object-fit:cover;display:block}
+.wall .c .d{position:absolute;left:8px;bottom:7px;color:#fff;font-size:10.5px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-24px);top:22px;z-index:99;background:var(--dark);color:#fff;
+  padding:14px 20px;border-radius:20px;font-size:14px;font-weight:600;box-shadow:var(--shHi);opacity:0;transition:.25s;max-width:88%;line-height:1.5;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.pop{text-align:center;padding:8px 4px 4px}
+.pop .e{font-size:64px}
+.pop h4{margin:14px 0 6px;font-size:26px;font-weight:800;letter-spacing:-.04em}
+.pop p{margin:0 0 22px;font-size:14px;color:var(--sub);line-height:1.65}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:17px 18px;margin-bottom:10px}
+.sw b{font-size:14.5px;font-weight:700}
+.sw em{display:block;font-style:normal;font-size:11.5px;color:var(--sub);margin-top:4px;font-weight:500;line-height:1.5}
+.tog{width:50px;height:30px;border-radius:16px;background:var(--soft);position:relative;flex:0 0 50px;transition:.2s}
+.tog i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.tog.on{background:var(--limeDeep)}
+.tog.on i{left:23px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app"><div id="view"></div></div>
+<button class="fab" id="fab" aria-label="add">+</button>
+<nav class="nav" id="nav"></nav>
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== 基础工具（先声明，避免 TDZ） ===================== */
+function pad(n){return String(n).padStart(2,'0');}
+function todayKey(d){d=d||new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function dayAdd(k,n){const[y,m,d]=k.split('-').map(Number);return todayKey(new Date(y,m-1,d+n));}
+function dateOf(k){const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d);}
+function dow(k){return dateOf(k).getDay();}
+function nowMin(){const d=new Date();return d.getHours()*60+d.getMinutes();}
+function t2m(t){if(!t)return null;const[a,b]=t.split(':').map(Number);return a*60+b;}
+function seedRand(n){const x=Math.sin(n*9301+49297)*233280;return x-Math.floor(x);}
+function pick(a,seed){return a[Math.floor((seed==null?Math.random():seed)*a.length)%a.length];}
+const D=id=>document.getElementById(id);
+const esc=(s='')=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el=h=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild;};
+
+/* ===================== 文案：[中文, English] ===================== */
+const T={
+ appTitle:['鸽了吗','Flaked'],
+ nav:[['今日','排行','奖励','战报'],['Today','Ranks','Rewards','Report']],
+ heroToday:['今日<br>清单','Today'],
+ heroBoard:['排行榜','Leader<br>board'],
+ heroReward:['奖励','Rewards'],
+ metaLeft:['{0} · {1} 月 · 还剩 <b>{2}</b> 项没交差','{0}, {1} · <b>{2}</b> still undone'],
+ metaNone:['{0} · {1} 月 · 今天没有安排','{0}, {1} · nothing scheduled'],
+ sDone:['今日完成','Done today'], sStreak:['连签天数','Day streak'], sPoints:['积分','Points'],
+ tagEmpty:['空的','Empty'], tagClear:['全清','All clear'], tagLeft:['还剩 {0} 项','{0} left'],
+ emptyRoast:['今天一条任务都没有。是真休息，还是不敢写。','Nothing on today. Real rest, or afraid to write it down?'],
+ tasks:['任务','Tasks'], tapToCheck:['点一下打卡','Tap to check in'],
+ emptyList:['今天列表是空的。<br>点右下角的 + 加一个，说话也行。','Nothing here today.<br>Hit + below. You can just talk to it.'],
+ anytime:['随时','anytime'],
+ /* 打卡面板 */
+ ckCount:['今天完成了多少 {0}（目标 {1}）','How much {0} today? (goal {1})'],
+ ckFull:['直接满额','Max it'],
+ ckNote:['写点什么（可选）','Say something (optional)'],
+ ckNotePh:['今天做得怎么样？三个字也行。','How did it go? Three words is fine.'],
+ ckPhoto:['加一张照片，存进你的记忆墙','Add a photo for your wall'],
+ ckDone:['完成打卡','Check in'], ckUpdate:['更新记录','Update'],
+ ckUndo:['撤销今天的打卡','Undo today'], ckEdit:['编辑任务','Edit task'],
+ youWrote:['你写下的','What you wrote'], takeIt:['收下','Take it'],
+ /* 添加任务 */
+ newTask:['新任务','New task'], editTask:['编辑任务','Edit task'],
+ micIdle:['按住说：每天早上七点跑步30分钟','Tap and say: run 30 minutes at 7pm daily'],
+ micListen:['在听… 说完自动停','Listening… stops on its own'],
+ micNo:['这个浏览器不支持语音，直接打字吧','No speech support here. Just type.'],
+ micRetry:['再说一次','Say it again'], micHeard:['听到：{0}','Heard: {0}'],
+ fWhat:['要做什么','What are you doing'],
+ fWhatPh:['例：每天晚上10点阅读20页','e.g. read 20 pages at 10pm daily'],
+ fTime:['提醒时间','Time'], fGoal:['目标数量（可空）','Goal (optional)'], fGoalPh:['如 30','e.g. 30'],
+ fUnit:['单位','Unit'], fUnitPh:['分钟 / 页 / 杯','min / pages / cups'],
+ fRepeat:['重复','Repeat'], fSave:['保存','Save'], fAdd:['加入清单','Add it'], fDel:['删除这个任务','Delete this task'],
+ /* 排行榜 */
+ boardSub:['跟你一起没睡懒觉的人','People who also got out of bed'],
+ yourSpot:['你的位置','Your spot'],
+ fullList:['完整榜单','Full list'], people:['{0} 人','{0} people'],
+ streakN:['连签 {0} 天','{0}-day streak'], realTag:['真人','real person'], botTag:['虚拟','bot'],
+ goPublic:['公开我的分数','Go public'],
+ pubTitle:['加入公共榜单','Join the public board'],
+ pubDesc:['开启后，你的昵称、积分和连签天数会被其他使用者看到，切到本页时刷新一次。关掉即停止上传。','Your nickname, points and streak become visible to other users. Refreshed when you open this tab. Turn it off to stop uploading.'],
+ nickname:['榜上显示的昵称','Name shown on the board'],
+ botNote:['带「虚拟」的是本地生成的对手，不联网。','Entries marked bot are generated locally and never go online.'],
+ onBoard:['已上榜','You are on the board'], offBoard:['已退出公共榜','Removed from the public board'],
+ /* 奖励 */
+ lvLabel:['当前段位 <b>{0}</b> · 免鸽卡 <b>{1}</b> 张','Rank <b>{0}</b> · <b>{1}</b> skip pass'],
+ ptsAvail:['可用积分 · 累计打卡 {0} 次','Points available · {0} check-ins total'],
+ boxTitle:['随机盲盒','Loot box'],
+ boxDesc:['60 分开一次，奖励随机。间歇性奖励比固定奖励更能维持行为。','60 points a pull, random payout. Intermittent rewards hold behavior better than fixed ones.'],
+ boxOpen:['开箱','Open'], boxAgain:['再来一次（60 分）','Again (60 pts)'], boxStop:['见好就收','Walk away'],
+ myRewards:['兑换你自己的奖励','Your own rewards'], redeem:['兑换','Redeem'],
+ addReward:['＋ 添加一个奖励','＋ Add a reward'],
+ rwWant:['你想要什么','What do you want'],
+ rwWhat:['奖励内容','The reward'], rwWhatPh:['例：看一场电影','e.g. one movie night'],
+ rwEmoji:['Emoji','Emoji'], rwCost:['需要多少分','Cost in points'],
+ rwHint:['定价建议：一次打卡大约 10–25 分。把奖励定在 3–5 天的产出，够得着，又值得。','Pricing: one check-in is worth 10–25 points. Price rewards at 3–5 days of output — reachable, still worth it.'],
+ rwAdd:['加进去','Add it'], rwGot:['已兑换 {0} 次','redeemed {0}×'],
+ badgesT:['徽章','Badges'], settings:['设置','Settings'],
+ gentleT:['温柔模式','Gentle mode'],
+ gentleD:['关掉毒舌，换成不带刺的提醒。心情不好的时候可以开。','Turns off the roasting. Plain, kind nudges instead. Use it on bad days.'],
+ langT:['语言 / Language','Language / 语言'],
+ dataT:['备份与恢复','Backup & Restore'],
+ dataD:['导出会下载 JSON 文件，包含全部任务、打卡、积分和照片。更新版本后用它恢复。','Export downloads a JSON file with all your tasks, check-ins, points and photos. Use it to restore after updating.'],
+ dataExport:['导出全部数据','Export everything'],
+ dataImport:['从备份文件恢复','Restore from backup'],
+ /* 战报 */
+ pWeek:['周','Week'], pQuarter:['季','Quarter'], pYear:['年','Year'],
+ heroWeek:['本周<br>战报','This<br>week'], heroQ:['本季<br>战报','This<br>quarter'], heroY:['年度<br>战报','This<br>year'],
+ rangeMeta:['{0} 起 · 完成 <b>{1}</b>/{2}','since {0} · <b>{1}</b>/{2} done'],
+ sumWeek:['毒舌总结','The verdict'], sumQ:['季度总结','Quarter verdict'], sumY:['年度总结','Year verdict'],
+ rxTitle:['下周的处方','Prescription for next week'],
+ rxTitleQ:['下个季度','For next quarter'], rxTitleY:['明年','For next year'],
+ statChecks:['打卡次数','Check-ins'], statBest:['最长连签','Longest streak'], statRate:['完成率','Completion'],
+ past:['往期','Archive'], pastN:['{0} 份','{0} saved'],
+ wall:['记忆墙','Memory wall'], wallSub:['打卡时拍的','Shot while checking in'], noPics:['还没有照片','No photos yet'],
+ weekOf:['{0} 那周','week of {0}'],
+ title:['年度称号','Title of the year'],
+ /* toast */
+ tAdded:['加好了。别又是个摆设。','Added. Try not to make it another ornament.'],
+ tAddedG:['加好了，慢慢来。','Added. Take your time.'],
+ tUndo:['撤了。所以你根本没做，对吧。','Undone. So you never did it, right.'],
+ tUndoG:['已撤销，明天继续。','Undone. Try again tomorrow.'],
+ tDel:['删了。少一个提醒你失败的东西。','Deleted. One less reminder of failure.'],
+ tSaved:['已保存','Saved'], tUpdated:['记录已更新','Record updated'],
+ tName:['先给它起个名字','Give it a name first'],
+ tWant:['先写清楚你想要什么','Write down what you actually want'],
+ tPoor:['分不够。回去打卡，别在这儿逛。','Not enough points. Go check something off.'],
+ tPoorG:['积分还不够，再打几次卡。','Not quite enough yet. A few more check-ins.'],
+ tBoxPoor:['60 分都凑不齐，还开箱。','Can\'t scrape together 60 points and still want to gamble.'],
+ tRedeem:['「{0}」拿去吧。这次是你自己挣的。','{0} is yours. You actually earned this one.'],
+ tRedeemG:['兑换成功，好好享受。','Redeemed. Enjoy it.'],
+ tGentleOn:['行，刀收起来了。','Fine. Knife away.'],
+ tGentleOff:['刀子拿回来了。','Knife\'s back.'],
+ tBadge:['解锁徽章 {0}','Badge unlocked: {0}'],
+ tWeekly:['上周的账算好了，去战报看看。','Last week\'s tab is in. Check the report.'],
+ tShrink:['正在压缩图片…','Compressing…'],
+ tStreakG:['连签停在了 {0} 天。重新开始就好。','Streak stopped at {0} days. Just start again.'],
+ lvNames:[['菜鸟','入门','上道','狠人','宗师'],['Rookie','Starter','Regular','Machine','Untouchable']],
+ wd:[['周日','周一','周二','周三','周四','周五','周六'],['Sun','Mon','Tue','Wed','Thu','Fri','Sat']],
+ wdShort:[['一','二','三','四','五','六','日'],['M','T','W','T','F','S','S']],
+ mon:[['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+      ['J','F','M','A','M','J','J','A','S','O','N','D']]
+};
+const POOL={
+ spicy:[[
+`就这？`,`行叭。`,`又来。`,`嗐。`,`啧。`,`意料之中。`,`又是这样。`,`熟悉的味道。`,`就当我没催。`,`装死呢？`,
+`装看不见？`,`醒醒。`,`忙什么呢。`,`你看你。`,`我懂了。`,`别装了。`,`说话呢。`,`别催我，我知道。`,`这么难吗。`,`别装忙。`,
+`淡定。`,`蛮好。`,`求求你。`,`我认输。`,`这就是你。`,`别自欺了。`,`别哄自己。`,`我等着。`,`我也无语了。`,`这是要闹哪样。`,
+`装什么装。`,`别装作没看见。`,`别装作在忙。`,`别装作明天会做。`,`就这样了？`,`我在这里。`,`我一直看着。`,`我不催了。`,`我看开了。`,`我服了。`,
+`别气我。`,`无话可说。`,`你自己想。`,`你自己看着办。`,`抖音刷得挺勤。`,`小红书翻得比工作认真。`,`微博热搜你都知道了。`,`朋友圈刷了三遍。`,`网剧看到第 8 集了。`,`打游戏两小时不累，看书五分钟犯困。`,
+`手机屏幕使用时间你敢看吗。`,`B站首页刷完了。`,`淘宝购物车加了半天。`,`微信步数 89 步。`,`电量剩 20%。`,`抖音的算法比你自己还懂你想干嘛。`,`收藏夹又多了一个"稍后再看"。`,`学习资料买了一堆，包装都没拆。`,`这个 app 你今天点了六次。`,`你比我还熟悉抖音的推荐机制。`,
+`淘宝已下单，任务未开始。`,`群里聊天回复得比任务积极。`,`短视频看了 40 分钟，正事 5 分钟挤不出来。`,`已经在小红书搜"如何自律"了。`,`收藏了七篇干货，一篇没看。`,`微信运动今天 100 步都不到。`,`又想着下单了。`,`又开始整理桌面了。`,`你在做的一切都在证明你不想做这个。`,`在等什么？`,
+`到底做不做？`,`心里踏实吗？`,`好意思吗？`,`又能怎样？`,`有话说吗？`,`借口想好了？`,`睡得着吗？`,`是又累了？`,`心虚了？`,`满意吗？`,
+`骄傲吗？`,`心疼你自己吗？`,`疼吗？`,`你信自己吗？`,`你觉得呢？`,`是不是该道歉了？`,`又要哭穷了？`,`累不累？`,`值不值？`,`你要拖到什么时候？`,
+`你觉得这样过瘾？`,`你不慌吗？`,`是不是又要"从明天开始"？`,`这次又要拖几天？`,`拖延症挺舒服的吧？`,`有救吗？`,`你不烦吗？`,`你不觉得可笑吗？`,`到底谁受累？`,`十分钟能做完的事，你想了两小时。`,
+`拖了这么久，重新开始都够了。`,`你磨蹭的时间够跑三公里了。`,`从早上磨到现在，中饭都吃完了。`,`早上说下午做，下午说晚上做，晚上说明天做。`,`时间够跑三圈，你在原地转。`,`昨天的你说明天，今天的你也说明天。`,`这条任务比你男朋友存在时间长。`,`24 小时你抽不出 10 分钟。`,`五分钟的活儿，你能拖八天。`,`半小时的事你能拆成六天。`,
+`你在拖时间，时间在拖你。`,`一天下来除了拖延什么都没干。`,`每天都在打卡的路上。`,`每天都想开始，都没开始。`,`每天都在准备开始。`,`每次都在收拾桌子。`,`你的准备工作比正事还多。`,`计划做了三小时，执行三分钟。`,`你把决心用完了，行动没剩多少。`,`这任务在你列表里住到有归属感了。`,
+`它已经把你的列表当家了。`,`你和它的关系维持得比恋爱还久。`,`它在等你，像等前任回消息。`,`你把任务当室友，谁也不打扰谁。`,`你俩已经处成老夫老妻了，各睡各的。`,`房东都比你按时。`,`你欠它的比欠花呗还多。`,`它比你朋友有耐心。`,`你对它的态度比对上司还敷衍。`,`你把清单当装饰。`,
+`你的待办列表是收藏，不是执行。`,`它跟你相处久了都学会等待了。`,`你对它比对亲妈还冷淡。`,`它可怜巴巴地等着你，你在刷手机。`,`你的清单像博物馆，展品不动。`,`我理解，你也很累。`,`我懂，谁不想躺着。`,`我知道你不容易。`,`我能感受到你的挣扎，虽然看不太出来。`,`我知道你有心无力。`,
+`我明白，谁都有低谷。`,`你辛苦了。真的。`,`我不怪你，我怪计划。`,`我理解你想放松，就是不该在这时候。`,`你也不是故意的。谁没有懒的时候。`,`你尽力了。虽然力气不多。`,`你已经比昨天进步了：昨天你连打开都没打开。`,`已经很好了，虽然我说不出哪里好。`,`你今天挺不容易的：手指头都刷酸了。`,`未来的你在骂现在的你。`,
+`你在给未来的自己攒工作量。`,`昨天的你已经放弃你了。`,`前天的你就是这么说的。`,`上周的你也这么说。`,`你六个月前给自己写的信没实现。`,`元旦立的 flag 现在什么状态？`,`去年今天你也在拖同一件事。`,`半年前的你比现在还有希望。`,`三十岁的你会怀念今天的自己吗，我猜不会。`,`你把决定权全交给了明天。`,
+`明天的你可怜。`,`未来的你，工作量已经排到下下周。`,`每次都留给未来的自己。他也累。`,`你现在躺着。`,`你在床上。`,`你在沙发上翻身。`,`你在厕所刷了 20 分钟。`,`你就差把手机粘脸上了。`,`你在给自己找零食吃。`,`你走神了三次。`,
+`你又摸了下头发。`,`你打了个哈欠。`,`你伸了个懒腰。`,`你在等一个不会来的灵感。`,`你在盯着屏幕发呆。`,`你在数外面的车。`,`你在整理桌子第三次。`,`你在换耳机。`,`你在选背景音乐。`,`你还在挑 to-do list app。`,
+`你去泡了三次咖啡。`,`你去趟卫生间就消失了半小时。`,`你正在跟自己解释为什么现在不做。`,`你在心里演戏。`,`你正在拖，明明知道自己在拖。`,`别装了，你就是不想做。`,`你根本没打算做，是不是。`,`承认你不是"没时间"，是"没兴趣"。`,`说累是借口，说忙也是借口。`,`明知道要做，就是不想动。`,
+`你的问题不是不知道方法。`,`方法你都懂，就是不做。`,`你不缺 app，缺行动。`,`卸载我也不会让你自律的。`,`换十个 app 结果都一样。`,`拖延不是病，是你的选择。`,`你不是缺时间，是缺决心。`,`别再骗自己了。`,`就这样过一天也是过。`,`得了，就当今天没有。`,
+`反正也不是第一天鸽了。`,`早鸽晚鸽都是鸽。`,`大不了明天再鸽一次。`,`反正也没人看。哦，我看着。`,`反正也不是第一次翻车。`,`破罐子破摔挺爽的吧。`,`就当你今天充电了。充了 12 小时。`,`你在给"躺平"这个词代言。`,`任务在原地长草。`,`任务比宠物还乖，就是不动。`,
+`你的执行力像 wifi，一进被窝就断。`,`你的自律像便利店的酸奶，天亮就过期。`,`你的动力像共享充电宝，取出来就掉电。`,`你的意志力周一充满，周二清零。`,`你的坚持像电池，用两下就红。`,`你的计划是纸糊的老虎。`,`你的清单像超市小票，长但没实质。`,`你的干劲是季节限定。`,`你的行动力是脉冲式的。`,`你的自律是猫的注意力，三秒。`,
+`明天要交，你还没开始。`,`死线之前你才动得起来。`,`deadline 是唯一的生产力。`,`没死线你就是死人。`,`老板催了你才做，自己催不动。`,`别人一说你就动，自己想的从不动。`,`你的效率靠恐惧驱动。`,`你欠自己的比欠老板还多。`,`老师说你潜力大，"潜"了三十年了。`,`潜力好深，深到看不见。`,
+`你的潜力挖不出来是有原因的。`,`你今天什么都没做。`,`今天等于没过。`,`今天不算数。`,`今天不存在。`,`今天是空白。`,`今天你只完成了一件事：打开这个 app。`,`今天你的产出：零。`,`今天你的成果：一个新的借口。`,`今天你的收获：又一天焦虑。`,
+`你怕做不好，所以不做。`,`完美主义是拖延的遮羞布。`,`"先规划一下"是最贵的拖延借口。`,`你不是准备不够，是不敢开始。`,`你怕开始，因为一开始就要面对水平。`,`你不是不会，是不想承认还不会。`,`你不想让自己失望，所以先不做。`,`你在保护那个"我要是做就能做好"的幻想。`,`你舍不得放下那个"潜力股"的人设。`,`你上周还嘲笑那个从不打卡的人。`,
+`你去年这时候比现在稳。`,`你三个月前的自己进步比现在快。`,`上个月的你都比现在的你努力。`,`你的最好状态回不来了。`,`你的巅峰是三月，四月开始下坡。`,`你妈问你在做什么，你说"忙"。你在这儿。`,`你说"就五分钟"，已经过了两小时。`,`你说"最后一个视频"，已经第七个了。`,`"等我这局打完"是你的口头禅。`,`"等一下就去"从来不算 "一下"。`,
+`"马上"在你的字典里 = "不确定什么时候"。`,`"明天"在你的字典里 = "永远"。`,`"我先休息一下"就是一天。`,`我不催了，你继续。`,`你开心就好。`,`就当我今天没上班。`,`让我猜猜，你在滑短视频。`,`别理我，你忙你的。`,`我等你有心情。`,`反正我也不着急。`,
+`我 24 小时在。`,`我不打扰你。`,`你先躺，我看着。`,`三十天前买的课程，进度 3%。`,`上个月定的目标，全忘了。`,`你昨天说要早睡，凌晨一点还在刷。`,`你今天说要早起，闹钟按了六次。`,`你说要减肥，刚点了外卖。`,`你说要健身，办卡三个月去了两次。`,`你说要读书，Kindle 落灰半年。`,
+`你说要学英语，Duolingo 提醒关了。`,`你说要写日记，最后一篇在春天。`,`你说要冥想，坐五分钟就想开会。`,`就这。`,`也没什么好说的。`,`该说的都说过了。`,`说也没用。`,`你自己看着办。`,`反正结果都一样。`,`又何必呢。`,
+`就这样吧。`,`我懒得说了。`,`我也累了。`,`你在拖延这件事上非常专注。`,`你不做事的姿态很坚定。`,`你逃避得很有章法。`,`你借口找得越来越有创意了。`,`你已经练成了瞬间遗忘任务的技能。`,`你在滑手机方面天赋异禀。`,`你的自我催眠水平堪比催眠师。`,
+`你的"下次一定"这四个字，说得越来越自然了。`,`说好的开始呢。`,`说好的坚持呢。`,`说好的改变呢。`,`说好的自律呢。`,`说好的成为想成为的人呢。`,`你要的那个"更好的自己"，进度条几个点？`,`"更好的自己"这几个字，你打字都费劲吧。`,`你要成为的人，正在被你抛弃。`,`每错过一次，那个更好的你就远一点。`,
+`你手上的沙子在漏。`,`时间没有暂停键，你有。`,`拖过了今天，明天照样得做。`,`逃过了这条，还有下一条。`,`你逃不掉的。`,`我在这里，一直在。`,`逃避可耻但很有用。你在充分利用这句话。`,`好了不说了，你继续吧。`
+ ],[
+`That it?`,`Fine.`,`Sure.`,`Wow.`,`Cute.`,`Adorable.`,`Nice.`,`Cool.`,`Right.`,`Uh huh.`,
+`Ok.`,`Bold.`,`Classic.`,`Predictable.`,`Same as always.`,`Not shocked.`,`Called it.`,`Of course.`,`Naturally.`,`Sure thing.`,
+`Whatever.`,`Please.`,`Seriously?`,`Come on.`,`Really?`,`Are you kidding.`,`Give it up.`,`Give me a break.`,`Not this again.`,`Here we go.`,
+`Look at you.`,`Bless.`,`Legend.`,`Iconic.`,`Amazing work.`,`Wild.`,`Bold move.`,`Extraordinary.`,`Impressive.`,`Peak performance.`,
+`TikTok's doing fine though.`,`Instagram's well-fed today.`,`Reddit thanks you for your time.`,`YouTube is thriving.`,`Your algorithm knows you better than you know yourself.`,`Screen time report is going to be interesting.`,`Battery down 40%. Progress bar: still zero.`,`You've opened this app six times today.`,`Six times. Zero taps on the checkmark.`,`Whatever you're doing on that other tab, it's not this.`,
+`Your recently played is embarrassing.`,`Your watch history knows what you did today.`,`Cart's full. Task list isn't.`,`You've favorited 17 tutorials this month. Watched: 0.`,`Bookmarked, not opened. As usual.`,`Another "watch later" that will never be watched.`,`You're better at scrolling than most professionals.`,`Notifications don't count as productivity.`,`You just refreshed the same page for the fourth time.`,`You alphabetized your desktop again. Still zero tasks done.`,
+`What are you waiting for?`,`Waiting for it to do itself?`,`Excuse ready yet?`,`Sleep well tonight?`,`Proud?`,`Feels good?`,`Worth it?`,`How's that working out?`,`Feel productive?`,`Feel free?`,
+`Feel anything?`,`When does the doing start?`,`What's the plan, exactly?`,`Any of this bothering you?`,`Still telling yourself you'll start soon?`,`How many more tomorrows do you have?`,`When was the last time you actually did this?`,`What are you protecting by not starting?`,`Who exactly are you hiding from?`,`Is it fear or laziness today?`,
+`Ten-minute task. You've been deciding for two hours.`,`You could have done it three times by now.`,`Long enough to run a 5K, and you haven't moved.`,`Started thinking about starting at 9am. It's afternoon.`,`Yesterday you said tomorrow. Today you said tomorrow.`,`Yesterday-you passed this to today-you. Today-you is doing the same trick.`,`You're outsourcing everything to future-you. That guy's drowning.`,`24 hours in a day. Ten minutes: not available.`,`Half an hour of work stretched across six days.`,`Every day the same list. Every day the same excuses.`,
+`You spent longer arranging the workspace than working.`,`The prep is bigger than the job.`,`Three hours of planning, three minutes of doing.`,`This has been on the list longer than some marriages last.`,`It's outlived your last relationship.`,`This task lives here now. Full resident.`,`You two have grown old together, doing nothing.`,`It waits like an ex hoping you'll text back.`,`Your relationship with this task has outlasted your last two.`,`It's more patient than any friend you have.`,
+`You treat it worse than you treat your landlord.`,`It's been on your list since spring.`,`You should give it its own room.`,`It's more loyal than you deserve.`,`I get it. You're tired.`,`I know. Who wants to.`,`I understand. Life is hard.`,`You're doing your best. Not much, but your best.`,`I don't blame you. I blame the schedule.`,`You've had a long day of scrolling.`,
+`You're not being lazy. You're being strategic. About laziness.`,`Poor thing.`,`Rest up. From what, unclear.`,`You've earned this break. From nothing.`,`Take your time. All of it.`,`Future-you is furious.`,`Past-you set you up.`,`You made this exact promise last week.`,`You made this exact promise last month.`,`Same task, same excuse, different day.`,
+`This time last year, you had the same plan.`,`Six months ago, you were more hopeful about this.`,`That letter you wrote to yourself in January? Yeah.`,`New Year's resolutions: how are those?`,`That version of you from March would be disappointed.`,`You're in bed.`,`You're on the couch.`,`You just went to the fridge again.`,`You've been in the bathroom for 22 minutes.`,`You just checked your phone for no reason.`,
+`You just looked at your reflection.`,`You picked up a snack.`,`You yawned twice.`,`You reorganized the tabs.`,`You changed the playlist.`,`You made another coffee.`,`You're waiting for inspiration. It's not coming.`,`You're rehearsing a speech to yourself.`,`You're justifying it in your head right now.`,`You know you're stalling. You're still stalling.`,
+`You just don't want to.`,`Admit it and it stops hurting.`,`You're not busy. You're avoiding.`,`Not "no time". No interest.`,`You know what to do. You're just not doing it.`,`Method isn't the problem. Movement is.`,`Another app won't fix you.`,`Ten apps later, same person.`,`It's not a disorder. It's a choice.`,`You're not lacking discipline. You're lacking urgency.`,
+`Stop lying to yourself.`,`You're addicted to the plan, allergic to the doing.`,`Sure, skip it. Consistent record intact.`,`Not your first flake, won't be your last.`,`Might as well.`,`It doesn't matter, right? Except it does.`,`Nobody's watching. Except me.`,`Consider today a rest day. Your fourth this week.`,`You're rebranding "quitting" as "listening to your body".`,`This is why nothing changes.`,
+`This task is growing moss.`,`Your willpower is like WiFi in the bedroom: no signal.`,`Your motivation is a battery that dies at 20%.`,`Your discipline is a rental car — you handle it rough.`,`Your goals are made of paper.`,`Your energy is seasonal.`,`Your commitment is a subscription you keep meaning to cancel.`,`Your resolve is convenience-store yogurt: expires overnight.`,`Your plan is a Rube Goldberg machine that never triggers.`,`Nothing gets done until it's due.`,
+`Deadlines are your only real productivity system.`,`Without pressure, you're a paperweight.`,`You need someone else's clock to move.`,`Someone else says jump, you jump. You say jump, you sit.`,`Your potential is buried deep. There's a reason.`,`Your teachers were optimistic about you. Once.`,`Today didn't happen.`,`Today = zero.`,`Today's output: one excuse.`,`Today's achievement: opening this app.`,
+`You wasted a full day and you know it.`,`Congrats, another blank square.`,`Afraid to fail, so you don't start.`,`Perfectionism is procrastination in a nicer outfit.`,`"Let me plan first" is the most expensive excuse.`,`You're protecting the fantasy of "if I tried, I'd be great".`,`You'd rather have potential than a result.`,`Not starting means you never have to face your actual level.`,`You're addicted to the identity, not the work.`,`You want the outcome without the process.`,
+`You want the trophy without the sport.`,`You were more consistent three months ago.`,`Your best version was in March. It's been downhill.`,`Last month's you was more disciplined.`,`Rewind six weeks. You were on it. What happened.`,`Even sleep-deprived-you last winter did better than this.`,`"Just five minutes" was two hours ago.`,`"Last video" is the seventh in a row.`,`"In a sec" is a lie you tell yourself hourly.`,`"Tomorrow" in your dictionary means "never".`,
+`"Later" is a synonym for "no".`,`"I need a break" was your break's break.`,`That course you bought three weeks ago: 3% complete.`,`Last month's goals: what were they again.`,`You said early to bed. Still up at 1am.`,`You said early to rise. Snoozed six times.`,`Said you'd work out. Gym card: two visits.`,`Said you'd read. Kindle: dusty.`,`Said you'd learn a language. Duo notifications: muted.`,`Said you'd write. Last entry: April.`,
+`Said you'd meditate. Sat for four minutes, planned a meeting.`,`Said you'd cook. Ordered in.`,`Whatever.`,`Sure, do it later.`,`Nothing to add.`,`I've said what I need to say.`,`Talking is pointless.`,`Figure it out.`,`Same result either way.`,`Why bother.`,
+`Fine, fine.`,`I'm out of things to say.`,`You're extremely focused on not doing this.`,`Your commitment to avoidance is admirable.`,`Your excuses are getting more creative.`,`You've mastered the art of forgetting on demand.`,`World-class scrolling technique.`,`Your self-hypnosis game is elite.`,`"Next time for sure" — you say it with such confidence now.`,`You could give TED talks on avoidance.`,
+`Where's the "starting fresh Monday" energy?`,`Where's the "this year is different" energy?`,`Where's the "new me" energy?`,`Where's the person who set this goal?`,`What happened to the you from three weeks ago?`,`Sand keeps falling.`,`There's no pause button. There's you, pausing.`,`Miss today, tomorrow still needs the same work.`,`Skip this one, the next one is waiting.`,`You can't outrun this list.`,
+`I'm here. Always.`,`You know what needs to happen. Do it or stop pretending.`,`Either move or delete it. Purgatory helps nobody.`,`Stop performing for yourself. Nobody's applauding.`,`Nobody's coming to rescue you from this.`,`This is what your life looks like when you don't decide.`,`Every hour like this is a vote for the person you don't want to be.`,`Small stuff you skip today is what you'll be doing at midnight next week.`,`Get up.`,`Move.`,
+`Do it. It takes less time than reading this.`,`Right now. Not "in a sec".`,`Stop reading this. Go do it.`,`You're still here. That's the problem.`,`Scrolled here on purpose to feel motivated. Didn't work, did it.`,`Reading a roast doesn't count as work.`,`This whole app doesn't count as work.`,`Guilt isn't effort.`,`Anxiety isn't progress.`,`Feeling bad about it isn't doing it.`,
+`You're reading this instead of working.`,`Even this line is procrastination.`,`Nice, you're staring at me instead of that task.`,`This roast is your third distraction this hour.`,`Yes, this counts as procrastination too.`,`You'll be fine. Just not today.`,`You'll figure it out. Some other year.`,`You'll get to it. Eventually. Probably.`,`It'll happen when it happens. Never.`,`Told you.`,
+`Called this last week.`,`Same movie, second showing.`,`Reruns.`,`Consistency: you have none. Except with this.`,`The one thing you're consistent about is dodging this one.`,`Your mom asked what you're doing. You said "busy". You're here.`,`Your notes app has 47 ideas. Executed: 0.`,`Your reading list is a graveyard.`,`Your gym clothes are cleaner than they should be.`,`Your journal ends in April.`,
+`Your camera roll has more screenshots of tips than photos of doing.`,`Your bookshelf is aspirational.`,`Your Spotify has a "focus" playlist that's never played through.`,`Your calendar is full of blocks that stayed empty.`,`Ok, that's enough from me.`,`Fine, I'll stop.`,`Do whatever you want.`,`I'm done trying.`,`Go on then.`,`I'll be here when you're ready. Which is when.`,
+`See you in an hour. Probably.`,`See you tomorrow. Same task.`,`See you Friday. Same task.`,`See you next Monday. Same task.`,`See you in six months when you delete me.`,`Anyway.`,`Ok bye.`,`That's all.`,`Nothing more to add.`,`Alright. Do or don't. Both are decisions.`,
+`You're making the "look busy" face and no one's buying.`,`That deep sigh isn't work.`,`Rolling your eyes at me doesn't move the task.`,`Muting me doesn't make it done.`,`Closing the app doesn't make it disappear.`,`I'll still be here in five minutes.`,`In an hour.`,`Tomorrow.`,`Next week.`,`Forever, technically.`,
+`This is the third time I'm saying it.`,`If I could sigh, I would.`,`Not angry. Just disappointed. And bored.`,`Bored of watching this.`,`Bored of writing new lines about it.`,`Even I'm running out of ways to say "do the thing".`,`Do the thing.`,`Do it.`,`Now.`,`Please.`
+ ]],
+ late:[[
+`迟到 {m} 了。你在等什么，等它自己做完？`,`超时 {m}。要不要给你搬个椅子。`,`晚了 {m}。理由我不听。`,`拖了 {m}，这时间够你干完两遍。`,`{m} 前你说马上就去。我信了。`,`{m} 过去了，什么都没发生。`,
+`已经晚了 {m}，你还在评估要不要开始。`,`迟了 {m}。至少能做一半再摆烂。`,`超了 {m}。这时间够看两集剧了，等下，是不是就是这么过去的。`,`晚 {m} 了。你在跟自己开会决定要不要动。`,`{m} 前定的时间，它一直等，你一直躲。`,`拖了 {m}。这已经不叫拖，叫遗忘了。`,
+`{m} 前的自己气死 {m} 后的自己。`,`晚了 {m}，我懒得算了。`,`{m} 过去，你的进度：还没开始。`,`到点 {m} 了。你在换第三首歌。`,`迟 {m}，你在决定用哪支笔。`,`晚 {m}，你在整理桌面。`,
+`{m} 前定的时间。你现在做还赶得上一半。`,`超时 {m}。倒计时早停了。`,`晚 {m}，别装作是随便看看。`,`{m} 过去。此刻你在跟自己解释为什么现在不做。`,`已经晚 {m}，就问你一句：还做吗？`,`{m} 过去了。省点心，晚上再补。哦，晚上又有别的借口。`,
+`迟 {m}，理由都陈旧了。`,`拖 {m}，你可以直接改时间了。`,`迟了 {m}，把这时间加到"实际用时"栏里也蛮好。`,`拖了 {m}，任务在自我怀疑。`,`晚了 {m}。它比闹钟准，你比它慢。`,`超时 {m}，你没忘。`,
+`晚了 {m}。别揣着明白装糊涂。`,`晚 {m}，闹钟响的时候你在装死。`,`晚了 {m}。你现在开始，还能救。就是不想。`,`拖 {m}，闹钟白响。`,`超时 {m}，你把提醒滑掉了两次。`,`{m} 过去，你嘴上说去做，人还在原地。`,
+`晚 {m}，等你想动的时候，明天就到了。`,`迟到 {m}。这句话你听腻了，可是每天照样。`,`超 {m}，你的"待会儿"是一整晚。`,`{m}，够我打字打完这一整条。你还没动。`,`已经晚 {m}，你把时间用在焦虑上，也是花掉了。`,`超时 {m}。任务不生气，我生气。`,
+`晚 {m}。你在心里排了几遍，就是不动手。`,`超 {m}，别再往后推了。`,`晚了 {m}。定的时间就是给自己看的，看了不做也是一种"看到"。`,`迟 {m}。你在跟自己拉扯。`,`拖了 {m}。你今天已经拖了不止一件了。`,`超时 {m}。就当我没提醒。`,
+`{m} 前你打开过这个 app。看了眼，走了。`,`拖 {m}，"再等等"已经等成了没戏。`,`晚 {m}，你还在纠结先做哪个。`,`已经晚 {m}。别装作在做别的正事。`,`晚 {m}，你连借口都懒得编了。`,`超 {m}。倒计时早清零，你还没进入状态。`,
+`晚 {m}。老话了：现在开始不亏。`,`迟到 {m}，你正好利用这段时间给自己写一段辩护词。`,`晚 {m}。今天的"仪式感"够久了。`,`超时 {m}。你能想到一百个借口，就是想不到"现在做"。`,`晚 {m}。就这几分钟你能干完，别倔了。`,`{m} 前你还是有希望的。`
+ ],[
+`{m} late. Waiting for it to do itself?`,`{m} overdue. Want a chair?`,`{m} late. Not interested in the reason.`,`Stalled {m}. That was enough time to do it twice.`,`{m} ago you said "in a minute". I believed you.`,`{m} gone. Nothing happened.`,
+`{m} past the time and you're still deciding.`,`{m} late. Halfway done would still be something.`,`Overshot by {m}. Long enough to watch two episodes. Wait, is that what happened.`,`{m} late. You're holding a meeting with yourself about whether to move.`,`Time you set {m} ago. It's waiting. You're hiding.`,`{m} in. This isn't procrastination, this is amnesia.`,
+`Past-you {m} ago is furious at current-you.`,`{m} late. I've stopped counting.`,`{m} passed. Progress: not started.`,`{m} past the mark. You're changing the playlist.`,`{m} in. You're choosing a pen.`,`{m} late. Reorganizing the desktop.`,
+`Time you set {m} ago. Start now, you can still hit half.`,`{m} overdue. The countdown stopped a while ago.`,`{m} late. Don't pretend this is "just checking in".`,`{m} past. Right now you're narrating an internal defense.`,`{m} in. Straight question: are you doing it or not?`,`{m} overdue. Save yourself the guilt, push it to tonight. Oh wait, tonight has excuses too.`,
+`{m} late. Even the excuses are used up.`,`Stalled {m}. Might as well move the scheduled time and stop lying.`,`{m} late. Just add this to your "actual time" column.`,`{m} overdue. The task is starting to doubt itself.`,`{m} late. The alarm was on time. You weren't.`,`{m} overdue. You didn't forget.`,
+`{m} late. You know exactly what's happening.`,`{m} in. When the reminder rang, you played dead.`,`{m} late. Start now and it's salvageable. You just don't want to.`,`Stalled {m}. Alarm was decorative apparently.`,`{m} overdue. You swiped the notification away twice.`,`{m} past. Verbally committed, physically stationary.`,
+`{m} late. By the time you feel like moving, tomorrow shows up.`,`{m} late. You've heard this line a hundred times and still.`,`{m} overdue. Your "in a bit" is the entire evening.`,`{m}. Long enough for me to type this whole thing out. You haven't moved.`,`{m} late. You're spending the time on anxiety. Same clock, worse ROI.`,`{m} overdue. The task isn't mad. I am.`,
+`{m} late. You've rehearsed doing it. Actually doing it, no.`,`{m} overdue. Stop pushing it further.`,`{m} late. You set the time so you'd see it. Seeing without doing is a kind of seeing.`,`{m} in. You're wrestling with yourself.`,`Stalled {m}. Not the only thing you've stalled today.`,`{m} overdue. Fine, I never reminded you.`,
+`{m} ago you opened this app. Peeked. Left.`,`Stalled {m}. "Waiting for the right moment" has aged past the moment.`,`{m} late. Still picking which one to do first.`,`{m} overdue. Don't pretend you're on some other important task.`,`{m} late. Too tired even to make an excuse.`,`Stalled {m}. Countdown ended, you never started.`,
+`{m} late. Classic line: starting now still counts.`,`{m} late. Use this window to draft your legal defense.`,`{m} overdue. That was a long ceremony for a five-minute task.`,`{m} late. You can generate a hundred reasons. "Now" isn't on the list.`,`{m} late. The window that's left is enough. Don't be stubborn.`,`{m} ago there was still hope.`
+ ]],
+ brk:[[
+`连签断在第 {n} 天。攒那么久，一天就送出去了。`,`{n} 天，没了。爽吗。`,`断了。昨天你自己在干嘛，心里有数。`,`{n} 天的连签结束。这次没什么值得挽留的了。`,`断了。{n} 天的努力就这么翻篇。`,`{n} 天，一夜清零。`,
+`你花 {n} 天堆的塔，一天就推倒。`,`{n} 天没了。心疼吗？我不心疼。`,`断在 {n}，就差一点点。永远都是"就差一点点"。`,`{n} 天的连签，昨天你决定放弃。`,`{n} 天挂了。今天你可以从零开始了，如果你还愿意。`,`断了。都不用问原因，你自己知道。`,
+`{n} 天了。你会不会有点难受？我猜有一点。`,`{n} 天的连签，散。`,`挂在 {n} 天。你会不会觉得，白干了？`,`{n} 天没了。就为了昨天那一点点懒。`,`断了。别想赖别的，就是你自己。`,`{n} 天，白。`,
+`连签断了。上次断的时候你也说下次一定。`,`{n} 天挂了。这次能不能撑得更久？我不太信。`,`{n}。没了。习惯就好。`,`断了。免鸽卡还有吗？没有？活该。`,`{n} 天，凉了。别再从头来第七次了。`,`断了。你把连签当回事吗？我不太确定。`,
+`{n} 天。这不是巧合，是选择。`,`断了。{n} 天的坚持，一夜之间没有意义。`,`{n} 天，昨天你决定不做的时候，就已经在给今天挖坑了。`,`挂了 {n} 天。别自我安慰"重新开始"，先看看你是怎么断的。`,`断了。{n} 天里你从来没这么松懈过。为什么？`,`{n} 天，鸽了。没关系，反正你惯犯。`,
+`断在 {n}。你今天要不要多想想。`,`{n} 天。没了就没了。别做纪念视频。`,`断了。{n} 天的仪式感，一次拉屎的时间就毁了。`,`挂 {n}。你昨晚在干嘛，我不问，你自己想。`,`{n} 天，散架。`,`断了。连签这事你其实一直没当真吧。`,
+`{n} 天没了。你手上还有那点自尊，靠这个撑着。`,`断。{n} 天里唯一稳定的东西，昨天没了。`,`{n} 天挂了。从零开始不难，难的是不再断一次。`,`{n} 天，凉。这次你会记得多久。`
+ ],[
+`Streak died at {n} days. Weeks to build, one day to hand back.`,`{n} days. Gone. Feel good?`,`Broken. You know exactly what you were doing yesterday.`,`{n}-day run over. Nothing worth mourning this time.`,`Broken. {n} days flipped closed like a book.`,`{n} days. Zeroed overnight.`,
+`{n} days building a tower, one day knocking it over.`,`{n} days gone. Sad? I'm not.`,`Ended at {n}. Always "just a bit more".`,`{n}-day streak. Yesterday you decided to quit.`,`{n} days dead. You can start over today if you still want to.`,`Broken. Don't need to ask why. You know.`,
+`{n} days. Stings a little? I'd guess yes.`,`{n}-day streak: gone.`,`Held at {n}. Feels wasted, doesn't it.`,`{n} days gone. All for one lazy evening.`,`Broken. Nobody else to blame.`,`{n} days. Wasted.`,
+`Streak broken. Last time you said "next time for sure" too.`,`{n} days dead. Longer this time? I have doubts.`,`{n}. Gone. Get used to it.`,`Broken. Any skip passes left? No? Yeah.`,`{n} days, cold. Don't start over for the seventh time.`,`Broken. Do you actually care about the streak? Not sure you do.`,
+`{n} days. Not a coincidence. A choice.`,`Broken. {n} days of consistency, meaningless overnight.`,`{n} days. Yesterday when you decided not to, you were setting today up.`,`Held {n}. Don't rush to "restart" — look at how you broke it first.`,`Broken. {n} days without slipping. Then this. Why.`,`{n} days, flaked. Fine. You're practiced at it.`,
+`Ended at {n}. Might be worth sitting with.`,`{n} days. Gone is gone. Don't make a video about it.`,`Broken. {n} days of ritual killed by one bathroom scroll.`,`Held {n}. What were you doing last night? Don't answer me, answer you.`,`{n} days, collapsed.`,`Broken. You never really committed, did you.`,
+`{n} days gone. Your remaining self-respect was propped up by this.`,`Broken. The one stable thing in {n} days: gone yesterday.`,`{n} days dead. Restarting is easy. Not breaking again is the hard part.`,`{n} days, cold. Let's see how long you remember this one.`
+ ]],
+ praise:[[
+`全清了。行吧，今天算你没白过。`,`干干净净。是不是有人替你打的卡。`,`今天没鸽。我记着，明天塌了我要提这事。`,`可以。就是不知道能撑几天。`,`今天你赢了。就今天，别飘。`,`没话说。撑三天再来找我。`,
+`全部搞定。可疑。`,`全勤。奇迹一样。`,`全做完了。今天日历有红字吗？`,`干净。像不是你的清单。`,`都打了。稳。`,`都完了。别停。`,
+`全过。就今天。`,`全清。适应不了。`,`都做了。想不到。`,`圆满。少见。`,`收工。今天可以。`,`全部完成。给自己拍一下。`,
+`打完了。有种再来一天。`,`通关。别飘。`,`全清空。你能吗？你能。`,`干净。今天算你。`,`全部搞定。是不是天气不错。`,`都打了。可以有。`,
+`都清了。这才对。`,`都完了。我不习惯。`,`全清。眼熟又陌生。`,`全部到位。稳如老狗。`,`打完了。今晚睡得踏实。`,`全过。等你连着来五天。`,
+`都做完了。是不是有事求我？`,`全清。看起来像真的。`,`干净。截图留证据。`,`都完了。让我怀疑数据错了。`,`全过。你自己都惊讶吧。`,`全部搞定。今天你听我的了。`,
+`都完了。行。`,`全清。你也不容易。`,`都打了。今天别晚睡毁了它。`,`完美。太完美。让我不安。`,`全完成。给你一句好话：不错。就这一句。`,`都过。你活得像个自律博主。`,
+`全部搞定。就这么继续。`,`干净。收藏这一天。`,`全做完了。今天你没有让我发挥。`,`全清。要不要奖励自己一下，冷静那种。`,`都过了。挺好，别得意。`,`完美收官。别打脸。`,
+`全部到位。你在给自己好看。`,`干净利落。我给你三分钟的自豪时间。`,`全过。就这么办。`,`都做完了。稀奇。`,`全清。存档。`,`干净。截图，收藏，明天再看。`,
+`全部完成。别高兴太早。`,`都打了。不错。真的。`,`全过。可以睡了。`,`完美。谢谢配合。`,`都完了。这才叫过了一天。`,`干净。好好休息，明天照旧。`
+ ],[
+`All clear. Fine. Today counted.`,`Spotless. Did someone else tick these for you?`,`You didn't flake today. Noted. I'll bring it up when you do.`,`Not bad. Question is how long it lasts.`,`You won today. Just today. Don't get comfortable.`,`Nothing to say. Come back after three days of this.`,
+`All done. Suspicious.`,`Full attendance. Rare.`,`Everything checked. Is today a public holiday?`,`Clean. Doesn't look like your list.`,`All in. Solid.`,`Complete. Keep going.`,
+`All passed. Just today.`,`All clear. Unfamiliar.`,`All done. Didn't see it coming.`,`Perfect. Uncommon.`,`Wrapped. Today's a yes.`,`Fully done. Pat yourself.`,
+`Cleared. Do it again tomorrow, I dare you.`,`Cleared. Don't float.`,`Zeroed out. You can. You did.`,`Clean. Point for today.`,`All done. Nice weather, maybe.`,`All checked. Alright.`,
+`All cleared. That's more like it.`,`All done. I'm not used to this.`,`Cleared. Familiar and strange at once.`,`Fully in place. Rock solid.`,`Wrapped. Sleep well tonight.`,`All passed. Show me five in a row.`,
+`Everything done. Wanting something?`,`Cleared. Looks legit.`,`Clean. Screenshot it.`,`All done. Data must be wrong.`,`All passed. You're surprised too, right.`,`Fully done. Today you actually listened.`,
+`All done. Sure.`,`Cleared. Not easy, was it.`,`All checked. Don't ruin it with a late night.`,`Perfect. Too perfect. I'm suspicious.`,`Fully done. Here's a compliment: nice. That's the whole thing.`,`All through. You look like a discipline influencer today.`,
+`Fully done. Keep the pattern.`,`Clean. Save today.`,`All done. Gave me nothing to work with.`,`Cleared. Reward yourself. Calmly.`,`All through. Good. Don't inflate.`,`Perfect close. Don't jinx it.`,
+`All in place. You're showing off for yourself.`,`Neat work. You get three minutes of pride.`,`All passed. Do it like this.`,`All done. Unusual.`,`Cleared. Archive today.`,`Clean. Screenshot, save, revisit tomorrow.`,
+`Fully done. Don't peak here.`,`All checked. Not bad. Really.`,`All through. Sleep.`,`Perfect. Thanks for cooperating.`,`All done. Now this counts as a day.`,`Clean. Rest well, same tomorrow.`
+ ]],
+ gentle:[[
+`还差一点，现在动一下也算。`,`不用做满，做一点就比零强。`,`今天累就先挑最小的那个划掉。`,`两分钟，就两分钟。`,`它还在，不催你。`,
+`不用完美，做了就好。`,`不做完也是进度。`,`今天状态不好，明天再多做一点。`,`一件事就够了，挑那件你现在能做的。`,`慢一点没关系。`,
+`别对自己太狠。`,`现在开始也不晚。`,`就一分钟，试试。`,`允许自己做得少一点。`,`你在做，就已经比大多数人稳了。`,
+`累的时候就休息。`,`明天再见，不生气。`,`不做也没事，别自责。`,`中断了没关系，重新开始就好。`,`你已经做得不错了。`,
+`走神了没关系，回来就是。`,`慢慢来，比较快。`,`感觉到累就停一下。`,`不要跟状态硬拼。`,`你不是机器。`,
+`记录本身就是意义。`,`打开这个就已经是一步。`,`想到它就是好的开始。`,`不用今天全部搞定。`,`少做一点不等于失败。`,
+`心情不好可以只做一半。`,`这条不做，也是一种选择。`,`你有权休息。`,`允许自己没有完成度。`,`完成不了不代表你不好。`,
+`明天再来一次就好。`,`不用逼自己。`,`现在做一点，比夜里补做要好。`,`状态在变化，接受就好。`,`你不需要证明什么。`,
+`每天做一点就够了。`,`不用比昨天多。`,`不做也可以，明天见。`,`允许波动。`,`慢的那天也是数据。`,
+`停一下再继续。`,`不用勉强。`,`你今天已经很不容易了。`,`记得对自己好一点。`,`你在坚持，只是慢一点。`,
+`状态起伏是正常的。`,`允许自己今天什么都不做。`,`明天状态可能会好。`,`不完成不是失败，是数据。`,`你有权说"今天不行"。`,
+`不用赶。`,`慢，也是一种前进。`,`允许自己躺一会。`,`起来喝口水也好。`,`不动也没关系，别难受。`
+ ],[
+`Almost there. Anything counts right now.`,`Doesn't have to be full. Some beats zero.`,`Rough day? Knock out the smallest one.`,`Two minutes. Just two.`,`It's still here. No rush.`,
+`Doesn't need to be perfect.`,`Progress is progress, even partial.`,`Tired today, do more tomorrow.`,`Just one thing, pick the one you can.`,`Slower is fine.`,
+`Be easy on yourself.`,`Starting now is still starting.`,`Try one minute.`,`Allow yourself to do less.`,`You're doing it. That's more than most.`,
+`Rest when you need to.`,`See you tomorrow, no hard feelings.`,`Not today is okay. No guilt.`,`Interrupted is fine. Just resume.`,`You're doing well.`,
+`Distracted? Come back gently.`,`Slow is faster in the long run.`,`Pause when you feel it.`,`Don't fight the mood.`,`You're not a machine.`,
+`Logging itself matters.`,`Opening this counts as a step.`,`Thinking about it is a start.`,`You don't have to finish today.`,`Less isn't failure.`,
+`Half is okay on hard days.`,`Skipping is a choice too.`,`You're allowed to rest.`,`Allow yourself no output.`,`Not finishing doesn't mean you're bad.`,
+`Try again tomorrow.`,`Don't force it.`,`A little now beats catch-up at midnight.`,`Moods shift. That's okay.`,`You don't have to prove anything.`,
+`A little each day is enough.`,`Doesn't have to be more than yesterday.`,`Rest day, no problem.`,`Waves are normal.`,`Slow days are data too.`,
+`Pause, then continue.`,`Don't push.`,`You've had a lot today.`,`Be kind to yourself.`,`You're still going, just slower.`,
+`Ups and downs are normal.`,`You can do nothing today. It's fine.`,`Tomorrow might feel better.`,`Not done isn't failure, it's data.`,`You're allowed to say "not today".`,
+`No rush.`,`Slow is still forward.`,`Take a moment.`,`Get up for water. That counts.`,`Stillness is okay too.`
+ ]],
+ jab:[[
+`迟到 {s}。`,`晚了 {s}，还做吗。`,`拖了 {s} 了。`,`超时 {s}，装看不见？`,`已经 {s}，理由想好了吗。`,`晚 {s}。`,`拖 {s}，多刺激。`,`已经 {s}。你知道我知道。`,`{s} 了，别装。`,`迟 {s}，闹钟响过了吧。`,
+`晚 {s}，装忙？`,`拖 {s}，就一直拖着好了。`,`{s} 过去，你也知道。`,`{s} 了，看着办。`,`超 {s}，能不能。`,`晚 {s}，见过。`,`拖 {s}，跟上次差不多。`,`晚了 {s}，别看我。`,`{s} 了，习惯了？`,`已经 {s}，别演。`,
+`晚 {s}，先滑一会？`,`拖 {s}，你行的。`,`晚 {s}，我等着。`,`{s} 了，我不催。`,`已经 {s}，你自己看着办。`,`迟到 {s}，还有戏吗。`,`晚 {s}，无所谓？`,`拖了 {s}，也是一种坚持。`,`{s}，你一直知道。`,`晚 {s}，情绪价值我给不了。`,
+`拖 {s}。开始了吗？`,`{s} 迟了。行吧。`,`晚 {s}，理由呢。`,`拖 {s}，我看着。`,`{s} 过去，谁负责？`,`晚 {s}。见怪不怪。`,`拖 {s}，你懂的。`,`晚 {s}，别辩解。`,`{s} 了，别自欺。`,`拖 {s}，随便你。`,
+`{s}，说好的呢。`,`晚 {s}，一如既往。`,`拖 {s}，就这。`,`{s}，没救了吗。`,`晚 {s}，接着刷。`,`拖 {s}，节奏很稳。`,`{s} 过去，装作不知道？`,`晚 {s}，别看别处。`,`拖 {s}，加油拖。`,`{s} 了，我等。`,
+`晚 {s}，走神了？`,`拖 {s}，撑到明天？`,`{s}，看你的了。`,`晚 {s}，无解？`,`拖 {s}，你熟练了。`,`{s} 迟了，别赖床。`,`晚 {s}，你猜我什么反应。`,`拖 {s}，别装作在忙。`,`{s}，无话可说。`,`晚 {s}。就这。`
+ ],[
+`{s} late.`,`{s} overdue. Still on?`,`Stalled {s}.`,`{s} late — pretending not to see?`,`{s} now. Got your excuse ready?`,`{s} past.`,`{s} in. Fun.`,`{s} late. You know I know.`,`{s} late. Drop the act.`,`{s} late. Alarm rang, right?`,
+`{s} late. Fake busy?`,`Stalled {s}. Just keep stalling.`,`{s} past. You know.`,`{s} late. Your call.`,`{s} over. Any day now.`,`{s} late. Familiar.`,`Stalled {s}. Same as last time.`,`{s} late. Don't look at me.`,`{s} late. Used to it?`,`{s} past. Cut the show.`,
+`{s} late. One more scroll?`,`Stalled {s}. Nailing it.`,`{s} late. I'll wait.`,`{s} in. I won't nudge again.`,`{s} late. Figure it out.`,`{s} late. Any chance?`,`{s} late. Care?`,`Stalled {s}. Consistency of a sort.`,`{s} in. You've known this whole time.`,`{s} late. Not in the mood to soothe.`,
+`Stalled {s}. Started?`,`{s} late. Right.`,`{s} late. The reason is…?`,`Stalled {s}. Watching.`,`{s} past. Who's handling it?`,`{s} late. Standard.`,`Stalled {s}. You know.`,`{s} late. Skip the pitch.`,`{s} late. Stop kidding yourself.`,`Stalled {s}. Do whatever.`,
+`{s} in. Wasn't there a plan?`,`{s} late. Same as always.`,`Stalled {s}. Sure.`,`{s} in. Hopeless?`,`{s} late. Keep scrolling.`,`Stalled {s}. Consistent pace at least.`,`{s} past. Playing dumb?`,`{s} late. Eyes here.`,`Stalled {s}. Keep going.`,`{s} in. Still waiting.`,
+`{s} late. Wandering?`,`Stalled {s}. Tomorrow then?`,`{s} in. Up to you.`,`{s} late. No solution?`,`Stalled {s}. You've mastered this.`,`{s} late. Don't blame the bed.`,`{s} late. Guess my reaction.`,`Stalled {s}. Not fake-busy.`,`{s} in. Nothing to say.`,`{s} late. That's it.`
+ ]]
+};
+const BRAIN=[
+ [['蔡加尼克效应','未完成的事会持续占用工作记忆，你现在的烦躁有一半来自那条没划掉的任务。做掉它比忍着它省力。'],
+  ['Zeigarnik effect','Unfinished tasks keep occupying working memory. Half of that low-grade irritation is the item you haven\'t crossed off. Doing it costs less than carrying it.']],
+ [['执行意图','把「我要跑步」改成「晚上 7 点换鞋出门跑步」。加上时间地点的 if-then 计划，执行率显著高于单纯的决心。'],
+  ['Implementation intentions','Swap "I\'ll go running" for "at 7pm I put my shoes on and leave". If-then plans with a time and place beat willpower by a wide margin.']],
+ [['66 天','习惯自动化的中位数约 66 天（Lally 2010），不是 21 天。中间断一两天不会毁掉进程，连续放弃才会。'],
+  ['66 days','Median time to automaticity is around 66 days (Lally, 2010), not 21. Missing a day or two doesn\'t reset it. Quitting does.']],
+ [['多巴胺管的是预期','它在你期待的时候分泌，不在你享受的时候。刷手机之所以爽，是预期来得又快又便宜。'],
+  ['Dopamine tracks anticipation','It fires when you expect a reward, not while you enjoy it. Scrolling wins because the anticipation is instant and cheap.']],
+ [['奖励预测误差','固定奖励会让大脑迅速脱敏，随机奖励反而维持动机。所以这里的盲盒是随机的，不是我懒。'],
+  ['Reward prediction error','Fixed rewards go stale fast; unpredictable ones keep behavior alive. That\'s why the loot box here is random.']],
+ [['两分钟启动','行动先于动机。启动阻力集中在前 120 秒，撑过去后大脑会自动接管。'],
+  ['The two-minute start','Action comes before motivation. Nearly all the resistance sits in the first 120 seconds. Get past it and your brain takes over.']],
+ [['损失厌恶','丢掉 20 天连签的难受，大约是拿到同等奖励快感的两倍。所以连签越长你越不敢断——这个心理你可以直接拿来用。'],
+  ['Loss aversion','Losing a 20-day streak stings about twice as much as gaining the equivalent feels good. The longer it runs, the less you dare break it. Use that.']],
+ [['提示—行为—奖励','基底神经节靠这个回路封装习惯。想戒掉刷手机，别硬扛意志力，去改提示：把手机放到另一个房间。'],
+  ['Cue, routine, reward','The basal ganglia package habits this way. To quit scrolling, don\'t fight it with willpower — change the cue. Phone in another room.']],
+ [['社会比较','看到别人的进度会激活腹侧纹状体的动机回路。所以排行榜有用，哪怕你嘴上说不在乎。'],
+  ['Social comparison','Other people\'s progress lights up the ventral striatum. Leaderboards work whether or not you admit you care.']],
+ [['意志力有账户','决策疲劳是真的。把重要任务排在早上，别放在开完六个会之后。'],
+  ['Willpower runs a budget','Decision fatigue is real. Put the task that matters in the morning, not after six meetings.']]
+];
+const NEWSPICY=[[
+`就这？`,`又来。`,`嗐。`,`啧。`,`呵。`,`无语。`,`意料之中。`,`又是这样。`,`熟悉。`,`装死呢？`,
+`醒醒。`,`求求你。`,`服了。`,`别装。`,`没救了。`,`别演了。`,`装什么装。`,`别装忙。`,`别哄自己。`,`就这样了？`,
+`我看不下去。`,`别气我。`,`就这么烂着。`,`别催我，是吧。`,`你自己想。`,`你说呢。`,`得了。`,`行叭。`,`别嗯了。`,`无话可说。`,
+`兄弟，你今天到底做没做事。`,`姐妹，你手机屏幕使用时间发出来看看？`,`别装了兄弟，你就是躺着。`,`你到底行不行啊。`,`我为你难过。真的。`,`你搁这儿演给谁看。`,`你搁这儿骗谁呢。`,`骗自己好玩吗。`,`你不觉得丢人吗。`,`你自己都嫌自己烦吧。`,
+`你妈知道你这样吗。`,`你爸辛苦供你，就为了看你躺着？`,`你以为你还年轻。`,`我像你这么大的时候……算了，别提。`,`你这样下去怎么办。`,`你什么时候能懂点事。`,`你怎么一点长进都没有。`,`你要气死我啊。`,`你自己心里没数吗。`,`你眼里还有目标吗。`,
+`你不是没时间，你是把时间给了抖音。`,`你不是不会，你是不想面对。`,`你不是累，你是拖习惯了。`,`你不是没状态，你是没决心。`,`你不是想休息，你是不想负责。`,`你不是不知道该做什么，你就是不做。`,`你不是"高敏感"，你是"高逃避"。`,`你不是完美主义，你就是懒。`,`你不是在思考，你在拖。`,`你不是 ADHD，你是不想开始。`,
+`你 25 岁的样子，跟 55 岁没什么区别。`,`三年前立的目标，你还在原地。`,`五年前你就说这句话了。`,`你 20 岁想成为的人，现在离你更远。`,`去年今天你也在拖这条。`,`你的成长曲线是一条平线。`,`你的自我进化速度=0。`,`你 30 岁回头看今天，会哭。`,`你 40 岁回头看今天，会麻木。`,`你 50 岁回头看今天，来不及了。`,
+`每一天你像今天这样过，加起来就是你这辈子。`,`你的日子在被你亲手浪费。`,`你手上的沙子在漏。`,`你的时间不站你这边。`,`你在浪费的是不可再生资源。`,`你不做，别人在做。`,`你的位置有的是人抢。`,`你以为你还有时间。`,`你正在杀死那个更好的自己。`,`你活成了当初嘲笑的样子。`,
+`你成了小时候发誓不要变成的那个人。`,`童年那个眼里有光的孩子，去哪了。`,`你在给"平庸"这个词代言。`,`你活得像草履虫，只有反射。`,`你现在躺着。`,`你在床上。`,`你在沙发上翻了三次身。`,`你在厕所里滑了 25 分钟。`,`你就差把手机粘脸上。`,`你在数外面的车。`,
+`你在整理桌面第四次。`,`你手指关节都滑酸了。`,`你颈椎在抗议，你没听见。`,`你眼睛干得发涩，还在盯屏幕。`,`你憋着尿滑手机 40 分钟。`,`你三小时没喝水，怕打断刷手机。`,`你今天最累的事是把手机举起来。`,`你今天走过最远的距离是沙发到冰箱。`,`你今天说过最长的话是给自己找的借口。`,`你今天动过最多的手指是右手大拇指。`,
+`抖音刷得挺勤。`,`小红书翻得比工作认真。`,`微博热搜你都熟。`,`B站首页刷完了。`,`淘宝购物车加了半天。`,`朋友圈刷了三遍。`,`微信步数 89 步。`,`电量剩 20%，进度条 0%。`,`抖音算法比你自己还懂你。`,`你比我还熟悉抖音的推荐机制。`,
+`收藏夹又多了个"稍后再看"。`,`学习资料买了一堆，包装都没拆。`,`收藏了七篇干货，一篇没看。`,`你在小红书搜"如何自律"，搜了半小时。`,`网课买了三门，进度都在个位数。`,`Kindle 落灰半年。`,`Duolingo 提醒你关了。`,`健身房卡办了三个月，去了两次。`,`Notion 模板下了 20 个，用了 0 个。`,`番茄钟设了一次，第一个番茄没坚持完。`,
+`十分钟的事，你决定了两小时。`,`五分钟的活儿，你能拖八天。`,`半小时的事你能拆成六天。`,`你磨蹭的时间够跑三公里了。`,`从早晨磨到下午，中饭都消化了。`,`24 小时你抽不出 10 分钟。`,`拖了这么久，重新开始都够了。`,`一天下来除了拖延什么都没干。`,`"等一下"从来不算"一下"。`,`"五分钟"从没有过五分钟。`,
+`"马上"= 不确定什么时候。`,`"明天"= 永远。`,`"等我这局打完"= 三小时后。`,`"看完这一集"= 追完这一季。`,`"先休息一下"= 一天。`,`"我今天状态不好"— 你昨天也这么说。`,`"让我先想清楚"— 想了三个月了。`,`"先做别的暖暖身"— 从来没暖到。`,`"等心情好了做"— 你心情不会好。`,`"从明天开始"— 你说过 365 次。`,
+`"重启一次"— 你重启了不下 20 次。`,`"我在思考"— 你在装。`,`"我在准备"— 你在闪躲。`,`"我尽力了"— 你还没开始。`,`"我有 ADHD"— 你有懒惰。`,`"我在自我关怀"— 你在自我合理化。`,`"我需要动力"— 动力不是等来的。`,`"我要个氛围"— 你的氛围是躺床。`,`"现在开始来不及了"— 现在不做才真的来不及。`,`"看开点吧"— 那叫放弃。`,
+`别说你没时间，你追的剧一集不落。`,`别说你不会，你教程收藏了一百个。`,`别说你迷茫，你只是不想动。`,`别说你在准备，你在闪躲。`,`别说你尽力了，你连开始都没开始。`,`别说你 emo，你是懒。`,`别说你在思考，你没在。`,`别说你需要陪伴，你需要自律。`,`别说你缺灵感，你缺行动。`,`别说你怕失败，你怕开始就要面对水平。`,
+`你自己都不尊重自己，还想别人尊重？`,`你说话都没底气了，因为你在混。`,`你朋友圈发得越来越少，因为没什么好晒。`,`你自拍要修图三十分钟，因为不敢直视自己。`,`你现在照镜子都不太乐意，是吧。`,`你走路都开始躲人的目光。`,`你已经开始羡慕别人的日常。`,`你上次为自己骄傲，是多久之前的事。`,`你上次让家人骄傲，是什么时候。`,`你自己都嫌自己没劲了，别怪别人。`,
+`你的简历这一年空白。`,`你的技能三年没升级。`,`你的行业在变，你在原地。`,`别人跳槽涨薪 30%，你的工资没动。`,`你的领导已经不指望你了。`,`你的同学在做副业，你在做梦。`,`你的同龄人在存首付，你在存借口。`,`你的行业没在等你成长。`,`你以为你还有几年缓冲。`,`你以为你在积累，其实你在退化。`,
+`你到底想要什么？`,`你到底愿不愿意付出代价？`,`你到底醒不醒？`,`你到底打不打算改？`,`你到底知不知道自己在浪费什么？`,`你到底还要拖到什么时候？`,`你到底想成为谁？`,`你到底怕什么？`,`你到底在等什么？`,`你到底为什么。`,
+`你 80 岁想起今天，只有懊悔。`,`你的葬礼上没什么可讲的。`,`别人回忆你会想到什么，滑手机的样子？`,`你活得像一段没意义的加载动画。`,`你的人生进度条卡在了 12%。`,`系统提示：你需要重启。真的。`,`你的"人生成就"页面：一片空白。`,`你在给自己写墓志铭："他打算做的事很多。"`,`你活成了一个笑话，还是自己讲的。`,`你已经成了朋友圈里"值得警惕"的那种人。`,
+`让我猜猜你现在在干嘛：滑手机。`,`我不看都知道你在床上。`,`我不问都知道你没做。`,`你手机是不是又快没电了。`,`你是不是又端着一杯什么在刷。`,`你嘴里是不是含着薯片。`,`你屋子里是不是外卖盒还没收。`,`你现在坐得腰是不是塌着。`,`你昨晚是不是又两点才睡。`,`你眼袋是不是又深了。`,
+`我知道你累。累到连手机都放不下。`,`你辛苦了。滑得手都酸了。`,`我理解你。真的。理解你怎么把自己毁成这样。`,`心疼你。心疼你把 24 小时用在这上面。`,`别难过。反正你也没打算做。`,`好好休息。从零工作量的一天里休息。`,`加油。虽然我不知道你还有什么可加的。`,`相信自己。相信自己会继续这样。`,`别放弃。你已经放弃了，只是嘴硬。`,`你可以的。等你想清楚"可以什么"再说。`,
+`你说你想努力，但从没为它牺牲过一分钟娱乐时间。`,`你想健身，但连站起来都嫌累。`,`你想学英语，但连 15 分钟都坚持不下来。`,`你想早睡，但每天凌晨都在刷。`,`你想减肥，但外卖点得比谁都勤。`,`你想读书，但 Kindle 电池都放没了。`,`你想副业，但连主业都摸不好。`,`你想变有钱，但连记账都不做。`,`你想找对象，但连出门都懒。`,`你想过好点，但不肯做任何改变。`,
+`你现在的样子，就是你一生的模板。`,`你今天做的选择，就是你的性格。`,`你怎么过一天，就怎么过一生。`,`每一次你选择躺下，都在决定你的未来。`,`你不选择，就是选择了随波逐流。`,`你不主动，就要被动接受一切。`,`你的生活，是你每一天的总和。`,`你今天不做的事，明天还会等你。`,`你以为你在暂停，其实时间在跑。`,`你以为你在等风口，其实风从你门前吹过了三次。`,
+`任务在你列表里长草。`,`你的执行力像 wifi，一进被窝就断。`,`你的自律像便利店酸奶，天亮就过期。`,`你的动力像共享充电宝，取出来就掉电。`,`你的意志力周一充满，周二清零。`,`你的坚持像电池，用两下就红。`,`你的计划是纸糊的老虎。`,`你的清单像超市小票，长但没实质。`,`你的干劲是季节限定。`,`你的自律是猫的注意力，三秒。`,
+`你的计划书写得比公司年报还细，执行栏空白。`,`你的目标像烟花，响一下就没了。`,`你的坚持像共享单车，骑一天就丢。`,`你的动力像早晨的雾，太阳出来就散。`,`你就是那种"以后一定会后悔"的人。`,`你会成为一个平庸的中年人，你知道的。`,`你以为你在"探索"，你在"逃避"。`,`你以为你在"休息"，你在"腐烂"。`,`你的人生按最差的剧本走，因为你把笔递出去了。`,`你就是自己一直嘲笑的那种人。`,
+`你不是在活，你在被时间搬运。`,`你在慢性自杀，只是用比较慢的方式。`,`你把每一天都过成了草稿。`,`你把命当积分卡，随便刷。`,`好了不说了，你继续躺。`,`别读了，去做事。`,`你在读这条，就已经在拖延。`,`你读完这条，会关闭 app，去刷别的。`,`我猜对了吧。`,`我不催你了，你也不会做。`,
+`就这样吧。你选的路。`,`反正我也白说。`,`你自己看着办。`,`我先撤了，你玩手机去吧。`,`今天你什么都没做。`,`今天等于没过。`,`今天不算数。`,`今天你唯一完成的：打开这个 app。`,`今天你的产出：零。`,`今天你的成果：一个新借口。`,
+`今天你的收获：又一天焦虑。`,`今天你的进步：会更熟练地拖延。`,`今天你多滑了 200 次屏幕。`,`今天你多躺了 4 小时。`,`你妈打电话你都懒得接。你在忙什么？滑抖音。`,`你答应过的事，没兑现过一件。`,`你朋友都在往前走，你在原地。`,`别人跟你聊未来，你只能扯借口。`,`你上次让身边人骄傲，是什么时候？`,`你上次让自己骄傲，是什么时候？`,
+`你打电话回家都心虚，因为你知道自己没变。`,`你不敢给爸妈打电话，因为不知道说什么。`,`你朋友聚会你都不太想去了。`,`你越来越少跟人主动聊天。`,`你会带着遗憾老去。`,`你 35 岁会开始羡慕别人的"选择"。`,`你 40 岁会说"要是当年"。`,`你 50 岁会跟晚辈讲"我年轻时也想过"。`,`你 60 岁会告诉自己"没关系"，但你会知道有关系。`,`你在给自己写一部悔恨史。`,
+`别哭，你只是在收自己种的果。`,`别怪谁，就是你自己。`,`你造成了今天的你。`,`这本书写得挺烂。作者就是你。`,`你不想改变，别装作想改变。`,`承认你就是想这样过。会轻松点。`,`承认你不打算成为任何人。`,`承认你选择了平庸。`,`承认你就是懒。是一种进步。`,`承认吧，你就这样了。`,
+`好些了吗？没做事的话，就没好。`,`睡够了吗？睡够了怎么还没动。`,`吃过了吗？吃了那么多，做了多少事。`,`心情怎么样？无所谓，做事去。`,`需要我陪你聊两句吗？不需要。做事。`,`我拿你没办法。`,`说什么你都听不进去。`,`骂你也没用。`,`求你也没用。`,`我不劝了。你请。`
+],[
+`That it?`,`Again.`,`Ugh.`,`Really.`,`Wow.`,`Nice.`,`Predictable.`,`Bold.`,`Classic.`,`Playing dead?`,
+`Wake up.`,`Please.`,`Come on.`,`Drop the act.`,`Hopeless.`,`Stop pretending.`,`Enough.`,`Not "busy".`,`Not "tired".`,`Not "not in the mood".`,
+`I've seen this before.`,`Same as always.`,`Sure. Whatever.`,`Do or don't.`,`Figure it out.`,`Your call.`,`Fine.`,`Whatever.`,`Nothing to add.`,`I'm done talking.`,
+`Bro. Did you actually do anything today.`,`Sis. Let me see that screen time report.`,`Cut it. You're horizontal.`,`Are you doing this or not.`,`I feel sorry for you. Genuinely.`,`Who's this performance for.`,`Who exactly are you fooling.`,`Fun, lying to yourself?`,`Don't you find this embarrassing?`,`Even you're tired of you.`,
+`Your mom would love to see this.`,`Your parents worked how many hours for you to lie down.`,`You think you're still young. You're not.`,`When I was your age... never mind. Skip it.`,`Where's this heading, exactly.`,`When are you going to grow up.`,`Not a single step forward.`,`You'll be the death of me.`,`You know what you're doing. Don't pretend.`,`What happened to your goals.`,
+`You have time. You gave it to TikTok.`,`You can. You won't face it.`,`You're not tired. You're used to stalling.`,`Not mood. Not decision.`,`You don't want rest. You want zero responsibility.`,`You know what to do. You just don't.`,`Not "highly sensitive". Highly avoidant.`,`Not perfectionism. Laziness in nicer clothes.`,`Not "thinking". Stalling.`,`Not ADHD. Not wanting to start.`,
+`You at 25 doesn't look that different from 55.`,`Three years ago, same goal. Same spot.`,`Five years ago, same sentence.`,`The person you wanted to be at 20 is further away now.`,`This day last year, same task, same excuse.`,`Your growth curve is a flat line.`,`Rate of self-improvement: zero.`,`At 30 you'll look back at today and cry.`,`At 40 you'll look back and go numb.`,`At 50 you'll look back and it's too late.`,
+`Every day like today, added up, is your life.`,`Your days are being wasted. By you.`,`Sand keeps falling.`,`Time isn't on your side.`,`You're burning a non-renewable resource.`,`You're not moving. Others are.`,`Plenty of people would take your spot.`,`You think you still have time.`,`You're killing the better version of yourself. Right now.`,`You became what you used to laugh at.`,
+`You are exactly who middle-school you swore not to be.`,`The kid with the bright eyes: where.`,`You're a walking definition of average.`,`You're a paramecium with WiFi.`,`You're lying down.`,`You're in bed.`,`You just rolled over on the couch.`,`You've been in the bathroom 25 minutes.`,`Phone's glued to your face.`,`You're counting cars outside.`,
+`Reorganizing the desktop again.`,`Your thumb is sore from scrolling.`,`Your neck is protesting. You're ignoring it.`,`Your eyes are dry. Still scrolling.`,`You've been holding it for 40 minutes for a phone.`,`Three hours without water. To not interrupt the scroll.`,`The heaviest thing you lifted today was your phone.`,`The furthest you walked today was couch to fridge.`,`The longest sentence you said today was an excuse.`,`The most active muscle today: right thumb.`,
+`TikTok's doing great though.`,`Instagram is well-fed today.`,`Twitter thanks you.`,`YouTube is thriving.`,`Your cart is full. Your task list isn't.`,`Refreshed the feed six times.`,`89 steps according to your phone.`,`20% battery. 0% progress.`,`The algorithm knows you better than you do.`,`You know TikTok's recommendation logic better than most engineers.`,
+`Another "watch later" that won't be.`,`Bought courses. Still shrink-wrapped.`,`Bookmarked seven articles. Read zero.`,`Searched "how to be disciplined" for 30 minutes.`,`Three online courses. Progress in single digits.`,`Kindle: dusty.`,`Duolingo notifications: muted.`,`Gym membership: two visits in three months.`,`Downloaded 20 Notion templates. Used 0.`,`Set a Pomodoro once. Didn't finish the first tomato.`,
+`Ten-minute task. Two hours of deciding.`,`Five-minute job stretched over eight days.`,`Half-hour of work smeared across six days.`,`Long enough to run a 5K.`,`Started stalling at 9am. It's afternoon.`,`24 hours. Can't find 10 minutes.`,`Stalled longer than starting over would take.`,`Whole day of procrastination.`,`"In a sec" is never a sec.`,`"Five minutes" is never five minutes.`,
+`"In a bit" = unknown time.`,`"Tomorrow" = never.`,`"After this game" = three hours later.`,`"Just this episode" = the season.`,`"Quick break" = the day.`,`"Not feeling it today" — you said that yesterday.`,`"Let me think it through" — three months of thinking.`,`"Warm up on something else" — never warms up.`,`"When I feel better" — you never will if you keep this up.`,`"Starting Monday" — you've said it 365 times.`,
+`"Restart" — you've restarted 20 times.`,`"I'm thinking" — you're pretending.`,`"I'm preparing" — you're dodging.`,`"I tried" — you didn't start.`,`"I have ADHD" — you have avoidance.`,`"I'm being kind to myself" — you're rationalizing.`,`"I need motivation" — motivation doesn't come. You go.`,`"I need the right vibe" — your vibe is horizontal.`,`"Too late to start today" — never too late to start. Too late to keep waiting.`,`"Just being realistic" — sounds like giving up.`,
+`Don't say no time. You never miss an episode.`,`Don't say you can't. You bookmarked a hundred tutorials.`,`Don't say you're lost. You're just not moving.`,`Don't say you're preparing. You're avoiding.`,`Don't say you tried. You didn't start.`,`Don't call it emo. It's lazy.`,`Don't say you're thinking. You aren't.`,`Don't say you need company. You need discipline.`,`Don't say uninspired. Say unwilling.`,`Don't blame fear of failure. It's fear of the mirror.`,
+`You don't respect yourself. Why should anyone.`,`Your voice sounds flat now. You know why.`,`You post less. Nothing worth showing.`,`Selfies take 30 minutes of editing. Can't face the raw one.`,`You don't quite like the mirror anymore.`,`You avoid people's eyes.`,`You've started envying others' ordinary days.`,`When did you last feel proud of you.`,`When did you last make family proud.`,`You're tired of yourself. Don't blame anyone else.`,
+`Your resume has a blank year.`,`Your skills haven't updated in three years.`,`Your industry moved. You didn't.`,`Others switched jobs, +30%. You held.`,`Your manager stopped expecting.`,`Your classmates started side gigs. You started daydreams.`,`Peers saving for down payments. You save excuses.`,`The industry isn't waiting for your growth.`,`You think you have a few years of buffer.`,`You think you're compounding. You're eroding.`,
+`What do you actually want?`,`What are you willing to give up for it?`,`Wake up or don't. Which?`,`Are you changing or not.`,`Do you know what you're wasting?`,`How much longer?`,`Who do you actually want to be?`,`What are you afraid of?`,`What exactly are you waiting for?`,`Why though.`,
+`At 80 you'll remember today with regret.`,`Not much for the eulogy.`,`What will people remember? The scrolling face?`,`You live like a loading screen.`,`Progress bar of life: 12%. Stalled.`,`System suggestion: restart. Really.`,`Your "achievements" tab is blank.`,`Writing your own epitaph: "He was going to."`,`You became the joke. And you wrote it.`,`You're one of the "cautionary tales" in your friend group's chat.`,
+`Let me guess: scrolling.`,`Don't need to look. You're in bed.`,`Don't need to ask. You didn't do it.`,`Phone battery low again?`,`Holding a drink while scrolling?`,`Chips in your mouth?`,`Delivery boxes still on the table?`,`Slouching hard enough to compress your spine?`,`You went to bed at 2am again?`,`Eye bags deeper today?`,
+`I know you're tired. Too tired to put down the phone even.`,`Long day for you. Thumb must ache.`,`I understand you. Really. Understand how you ruined this.`,`Feel bad for you. All 24 hours went into this.`,`Don't be sad. You never planned to do it anyway.`,`Rest well. From your zero-workload day.`,`You got this. If I knew what "this" was.`,`Believe in yourself. Believe you'll keep doing exactly this.`,`Don't give up. You gave up. You just won't say it.`,`You can do it. Once you figure out what "it" is.`,
+`You want to try harder but won't sacrifice one minute of scrolling.`,`Want to work out but can't stand up.`,`Want to learn English but can't do 15 minutes.`,`Want to sleep early. Up at 2 anyway.`,`Want to lose weight. Delivery says otherwise.`,`Want to read. Kindle battery died from disuse.`,`Want a side hustle. Can't manage the main one.`,`Want to be rich. Can't keep a budget.`,`Want a partner. Can't leave the house.`,`Want a better life. Won't change a thing.`,
+`Today's version of you is your life's template.`,`What you did today is your character.`,`How you spend a day is how you spend a life.`,`Every time you lie down, you decide your future.`,`Not deciding is deciding.`,`Not moving is accepting.`,`Your life is the sum of your days.`,`What you skip today is here tomorrow.`,`You think you paused. Time didn't.`,`You think you're waiting for the wave. It passed thrice already.`,
+`This task is growing moss.`,`Your willpower is bedroom WiFi.`,`Your discipline is convenience-store yogurt.`,`Your motivation is a rental power bank.`,`Charged Monday, dead Tuesday.`,`Battery hits red in two taps.`,`Your plan is a paper tiger.`,`Your list is a receipt: long, no substance.`,`Your drive is seasonal.`,`Your focus is a cat's: three seconds.`,
+`Your plan is more detailed than a company report. The doing column is empty.`,`Your goals are fireworks: one bang, gone.`,`Your resolve is a shared bike: leave it in the street.`,`Your motivation is morning fog. Sun kills it.`,`You are exactly the "should've started earlier" type.`,`You'll be a mediocre adult. You're engineering it.`,`You call it exploring. It's avoiding.`,`You call it resting. It's rotting.`,`Your life is running the worst possible script. You handed over the pen.`,`You are what you used to laugh at.`,
+`You're not living. You're being carried by time.`,`Slow suicide, with extra steps.`,`You turn every day into a draft.`,`You treat your life like a loyalty card. Random punches.`,`Ok that's enough. Keep lying there.`,`Stop reading. Go.`,`Reading this is already procrastination.`,`You'll close the app and open another one. I know.`,`Called it.`,`I stopped nudging. You won't do it anyway.`,
+`Fine. Your road.`,`Talking to a wall.`,`Figure it out.`,`I'm out. Enjoy your phone.`,`Today you did nothing.`,`Today = zero.`,`Today doesn't count.`,`The only thing you completed today: opening this app.`,`Today's output: 0.`,`Today's yield: one new excuse.`,
+`Today's harvest: another day of anxiety.`,`Today's growth: better at procrastinating.`,`Today you swiped +200 times.`,`Today you added 4 hours of lying down.`,`Your mom called. You didn't answer. What were you doing? Scrolling.`,`Every promise you made? Zero fulfilled.`,`Friends are moving. You're posting about it.`,`When friends talk future, you talk excuses.`,`When did you last make anyone around you proud.`,`When did you last make yourself proud.`,
+`Guilty calling home. Because you know you haven't changed.`,`You avoid calling parents. Nothing to say.`,`You stopped enjoying friend meetups.`,`You reach out less. And less.`,`You'll grow old with regret.`,`At 35 you'll start envying others' choices.`,`At 40 you'll say "if only".`,`At 50 you'll tell juniors "I was going to".`,`At 60 you'll tell yourself "it's fine". You'll know it isn't.`,`You're writing a memoir of regret.`,
+`Don't cry. You planted this.`,`Nobody else. Just you.`,`You engineered today's you.`,`Bad book. You're the author.`,`Don't pretend you want to change.`,`Admit you like it this way. It'll hurt less.`,`Admit you're not trying to become anyone.`,`Admit you chose average.`,`Admit you're lazy. Progress.`,`Admit it. This is who you are.`,
+`Feeling better? If you didn't work, no.`,`Slept enough? Enough to still not move?`,`Ate? A lot. Did how much?`,`How's your mood? Irrelevant. Work.`,`Want to talk? No. Move.`,`I give up on you.`,`Nothing gets through.`,`Yelling doesn't work.`,`Begging doesn't work.`,`I'm done. All yours.`
+]];
+
+POOL.spicy = NEWSPICY;
+const VERDICT={
+ week:[[
+  [.9,`{P}%。可以，这周你没给我发挥的机会。下周呢。`],
+  [.9,`{P}%。全线保持，行。别开始骄傲，骄傲之后就该塌了。`],
+  [.9,`{P}%。这一周你像另一个人。这个人下周还在吗。`],
+  [.65,`{P}%。就是那种"我也挺努力的"的水平。差在哪你自己清楚。`],
+  [.65,`{P}%。够看，不惊喜。中间断掉的那两天你心里有数。`],
+  [.65,`{P}%。不好不坏。就这个"不好不坏"，卡了你一年了。`],
+  [.3,`{P}%。看心情办事，跟抛硬币差不多。`],
+  [.3,`{P}%。周初还挺猛，周中就没影了。老剧本。`],
+  [.3,`{P}%。做的那部分靠冲动，没做的那部分靠习惯。`],
+  [0,`{P}%。这周你唯一坚持下来的，是打开这个 app 看一眼然后关掉。`],
+  [0,`{P}%。七天，加起来的努力还不够看一场电影。`],
+  [0,`{P}%。行吧，这就是你的一周。下周别再拿"这周太忙"当借口。`]
+ ],[
+  [.9,`{P}%. Fine. You gave me nothing to work with this week. Next week though.`],
+  [.9,`{P}%. Held the whole line. Don't let it go to your head — that's usually when it collapses.`],
+  [.9,`{P}%. You were a different person this week. Curious if that person shows up next week.`],
+  [.65,`{P}%. The "I've been pretty busy" tier. You know which ones you dropped.`],
+  [.65,`{P}%. Decent, not surprising. The two days that caved — you know.`],
+  [.65,`{P}%. Not bad, not good. That "not bad, not good" has held you back for a year.`],
+  [.3,`{P}%. Mood-based execution. About as reliable as a coin.`],
+  [.3,`{P}%. Strong start Monday, ghost by Wednesday. Same script.`],
+  [.3,`{P}%. The done part was impulse. The undone part was habit.`],
+  [0,`{P}%. The only thing you kept up this week was opening this app and closing it.`],
+  [0,`{P}%. Seven days. The total effort here wouldn't fill a movie.`],
+  [0,`{P}%. Sure. That was your week. Don't drag out "too busy" again next Monday.`]
+ ]],
+ quarter:[[
+  [.85,`{P}%。一整个季度稳住了，这已经不是靠状态了。`],
+  [.85,`{P}%。三个月的连贯输出。你把某种"节奏"从纸上做到了身上。`],
+  [.85,`{P}%。90 天里的起伏你都扛过来了。这是可以拿去说服自己的证据。`],
+  [.6,`{P}%。三个月下来还行。中间塌掉的那几周，你自己知道是哪几周。`],
+  [.6,`{P}%。稳定的开局，中段散漫，收尾勉强追回来。老套路了。`],
+  [.6,`{P}%。60 分左右晃悠了三个月。想再上一档，就得挑一件事做狠。`],
+  [.35,`{P}%。开头猛得像换了个人，后面就没影了。老剧本了。`],
+  [.35,`{P}%。三个月三种状态：意气风发、意兴阑珊、意料之中。`],
+  [.35,`{P}%。做了 {N} 次，也不是没努力，就是没连起来。`],
+  [0,`{P}%。这个季度基本等于没发生。九十多天，你留下 {N} 次打卡。`],
+  [0,`{P}%。一个季度过去，你还在同一个起点。这不叫慢，叫原地。`],
+  [0,`{P}%。别怪工作忙、别怪状态差。90 天，够改变很多东西了。`]
+ ],[
+  [.85,`{P}%. A whole quarter held. That's not mood anymore, that's a system.`],
+  [.85,`{P}%. Three consecutive months of output. You moved a rhythm off the page and into your body.`],
+  [.85,`{P}%. Ninety days of ups and downs and you held. That's evidence you can quote at yourself.`],
+  [.6,`{P}%. Decent over three months. You know exactly which weeks caved.`],
+  [.6,`{P}%. Solid open, sloppy middle, barely recovered at the end. Classic arc.`],
+  [.6,`{P}%. Bounced around the 60% line for three months. To move up, you'll have to pick one thing and go harder.`],
+  [.35,`{P}%. Started like a new person, vanished by week five. Familiar script.`],
+  [.35,`{P}%. Three months, three moods: charged, slipping, predictable.`],
+  [.35,`{P}%. {N} check-ins. Not zero effort. Just never strung together.`],
+  [0,`{P}%. This quarter basically didn't happen. Ninety-odd days, {N} check-ins.`],
+  [0,`{P}%. A quarter gone and you're at the same start line. That's not slow. That's static.`],
+  [0,`{P}%. Not work, not mood. Ninety days is enough time to change a lot of things.`]
+ ]],
+ year:[[
+  [.8,`{P}%。一年下来还在这儿，说明变的是你，不是你的计划表。`],
+  [.8,`{P}%。365 天里你没让自己失望超过 20%。这个成绩去年你不敢想。`],
+  [.8,`{P}%。你今年做成的事，明年只要维持，就已经是复利了。`],
+  [.55,`{P}%。有几段坚持得很好，也有几段整个消失。至少你没把这个 app 删掉。`],
+  [.55,`{P}%。及格线以上晃了一年。想突破，就得允许自己在少数事情上执着一点。`],
+  [.55,`{P}%。全年记了 {N} 次。不多也不少，够你回头看，不够让你自傲。`],
+  [.3,`{P}%。三百多天，{N} 次打卡。去年这个时候，你也是这么打算的。`],
+  [.3,`{P}%。你在"想改变"和"没变"之间来回一整年。年底了，选一个。`],
+  [.3,`{P}%。一年下来你证明了一件事：光有 app 是不够的。`],
+  [0,`{P}%。这一年最大的成果是安装了这个 app。明年别再让我写同一段话。`],
+  [0,`{P}%。365 天，你留给自己的痕迹是 {N}。少得可怕。`],
+  [0,`{P}%。就当今年是一次昂贵的教训。明年别再靠决心，靠系统。`]
+ ],[
+  [.8,`{P}%. Still here after a year. That means you changed, not your spreadsheet.`],
+  [.8,`{P}%. Over 365 days you disappointed yourself less than 20% of the time. A year ago you couldn't have promised that.`],
+  [.8,`{P}%. What you built this year, next year you only have to hold. That's already compounding.`],
+  [.55,`{P}%. Some stretches were genuinely good. Others vanished entirely. At least you never deleted this thing.`],
+  [.55,`{P}%. Above the pass line for a year. To break through, allow yourself to be obsessive about a small number of things.`],
+  [.55,`{P}%. {N} check-ins across the year. Not many, not few. Enough to reflect on, not enough to brag.`],
+  [.3,`{P}%. Three hundred odd days, {N} check-ins. This time last year you had the same plan.`],
+  [.3,`{P}%. You spent a whole year between "wanting to change" and "not changing". Pick one by January.`],
+  [.3,`{P}%. A year proved one thing: the app alone isn't enough.`],
+  [0,`{P}%. Your main achievement this year was installing this app. Don't make me write this again.`],
+  [0,`{P}%. 365 days. Total mark you left on yourself: {N}. Painfully little.`],
+  [0,`{P}%. Call this year an expensive lesson. Next year, don't rely on resolve. Rely on system.`]
+ ]]
+};
+const YEARTITLE=[[ [.8,'年度狠人'],[.55,'断断续续的坚持者'],[.3,'间歇性踌躇满志'],[0,'年度鸽王'] ],
+                [ [.8,'Machine of the year'],[.55,'On-and-off but real'],[.3,'Seasonally motivated'],[0,'Flake of the year'] ]];
+const BADGES=[
+ {id:'b1',e:'🌱',n:['第一次','First one'],c:s=>totalDone(s)>=1},
+ {id:'b3',e:'🔥',n:['连签 3 天','3-day streak'],c:s=>s.streak.best>=3},
+ {id:'b7',e:'⚡',n:['连签 7 天','7-day streak'],c:s=>s.streak.best>=7},
+ {id:'b21',e:'🧠',n:['连签 21 天','21-day streak'],c:s=>s.streak.best>=21},
+ {id:'b66',e:'👑',n:['连签 66 天','66-day streak'],c:s=>s.streak.best>=66},
+ {id:'b50',e:'💯',n:['累计 50 次','50 check-ins'],c:s=>totalDone(s)>=50},
+ {id:'bp',e:'📷',n:['留影 10 张','10 photos'],c:s=>countPics(s)>=10},
+ {id:'bb',e:'🎁',n:['开箱 10 次','10 boxes'],c:s=>s.boxes>=10}
+];
+const PRESET=[
+ {n:['喝水','Water'],i:'💧',target:8,unit:['杯','cups'],time:'09:00'},
+ {n:['跑步','Run'],i:'🏃',target:30,unit:['分钟','min'],time:'19:00'},
+ {n:['阅读','Read'],i:'📖',target:20,unit:['页','pages'],time:'21:00'},
+ {n:['早睡','Sleep early'],i:'😴',target:0,unit:['',''],time:'23:00'},
+ {n:['背单词','Vocab'],i:'🔤',target:50,unit:['个','words'],time:'08:00'},
+ {n:['健身','Workout'],i:'💪',target:45,unit:['分钟','min'],time:'18:30'},
+ {n:['冥想','Meditate'],i:'🧘',target:10,unit:['分钟','min'],time:'07:30'},
+ {n:['写日记','Journal'],i:'✍️',target:0,unit:['',''],time:'22:00'}
+];
+const BOTS=[
+ {n:['卷王阿哲','Grind Mode Zhe'],a:'🦾',r:78},{n:['六点起的林','6AM Lin'],a:'🌅',r:64},
+ {n:['不摸鱼小夏','No-Slack Xia'],a:'📗',r:52},{n:['健身房常客','Gym Regular'],a:'🏋️',r:44},
+ {n:['考研的猫','Exam Cat'],a:'🐈',r:36},{n:['夜跑老王','Night Runner'],a:'🌙',r:29},
+ {n:['新手上路','Fresh Start'],a:'🐣',r:21},{n:['摸鱼冠军','Champion Slacker'],a:'🐟',r:13},
+ {n:['鸽子精本精','Certified Flake'],a:'🕊',r:7}
+];
+
+/* ===================== 状态 ===================== */
+const KEY='dg_core_v4';
+let mem={}, tab='today', period='week';
+function defaults(){return{
+  tasks:[],logs:{},points:0,freeze:1,badges:[],rewards:[],history:[],
+  streak:{cur:0,best:0,noticed:null},boxes:0,lastWeek:null,created:todayKey(),
+  uid:'u'+Math.random().toString(36).slice(2,8),
+  set:{name:'',gentle:false,public:false,lang:'zh'}
+};}
+let S=defaults();
+const LI=()=>S.set.lang==='en'?1:0;
+function t(k,...a){let s=T[k][LI()];a.forEach((v,i)=>{s=s.split('{'+i+'}').join(v)});return s;}
+function pk(name,seed){return pick(POOL[name][LI()],seed);}
+function brain(seed){return pick(BRAIN,seed)[LI()];}
+async function sGet(k,sh){try{const r=await window.storage.get(k,!!sh);return r?r.value:null}catch(e){return mem[k]!==undefined?mem[k]:null}}
+async function sSet(k,v,sh){try{await window.storage.set(k,v,!!sh)}catch(e){mem[k]=v}}
+let sv;function save(){clearTimeout(sv);sv=setTimeout(()=>sSet(KEY,JSON.stringify(S)),250);}
+function toast(m){const x=D('toast');x.textContent=m;x.classList.add('on');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('on'),2800);}
+
+/* ===================== 解析 ===================== */
+function iconFor(s){
+  const m=[[/跑|走路|步|run|walk/i,'🏃'],[/水|喝|water|drink/i,'💧'],[/书|阅读|读|read|book/i,'📖'],
+  [/睡|床|sleep|bed/i,'😴'],[/健身|俯卧|撸铁|练|gym|workout|lift/i,'💪'],[/单词|英语|背|vocab|word/i,'🔤'],
+  [/冥想|正念|呼吸|medit|breath/i,'🧘'],[/写|日记|笔记|journal|write|note/i,'✍️'],[/学|课|复习|study|class/i,'📚'],
+  [/药|维生素|pill|vitamin|med/i,'💊'],[/早起|起床|wake|rise/i,'🌅'],[/代码|编程|刷题|code|leetcode/i,'💻'],
+  [/琴|吉他|guitar|piano/i,'🎸'],[/画|draw|paint/i,'🎨'],[/戒|少吃|忌|quit|no /i,'🚫'],[/打扫|整理|clean|tidy/i,'🧹']];
+  for(const[r,e]of m)if(r.test(s))return e;return '🎯';
+}
+function parseTask(raw){
+  let s=' '+raw.trim()+' ',days=[0,1,2,3,4,5,6],time=null,target=0,unit='',cut=[];
+  const rx=x=>new RegExp(x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+  if(/工作日|上班日|周一到周五|weekday|mon-fri/i.test(s)){days=[1,2,3,4,5];cut.push(/工作日|上班日|周一到周五|weekdays?|mon-fri/gi);}
+  else if(/周末|双休|weekend/i.test(s)){days=[0,6];cut.push(/周末|双休|weekends?/gi);}
+  else{
+    const wk=s.match(/周[一二三四五六日天]/g);
+    if(wk){const mp={'日':0,'天':0,'一':1,'二':2,'三':3,'四':4,'五':5,'六':6};
+      days=[...new Set(wk.map(w=>mp[w[1]]))];cut.push(/每?周[一二三四五六日天]、?/g);}
+  }
+  let off=0;
+  if(/下午|傍晚|晚上|夜里|睡前|今晚|\bpm\b|evening|night|tonight/i.test(s))off=12;
+  const ap=s.match(/(\d{1,2})\s*(?::|：|点)\s*(\d{1,2})?/)||s.match(/\b(\d{1,2})\s*(am|pm)\b/i);
+  if(ap){let h=+ap[1];const mi=+(ap[2]&&!isNaN(ap[2])?ap[2]:0);
+    if(/pm/i.test(ap[2]||'')&&h<12)h+=12; else if(/am/i.test(ap[2]||'')&&h===12)h=0;
+    else if(off&&h<12)h+=12;
+    time=pad(Math.min(h,23))+':'+pad(Math.min(mi,59));cut.push(rx(ap[0]));}
+  const du=s.match(/(\d+)\s*(分钟|小时|个小时|min(?:ute)?s?|hours?|hrs?|h\b)/i);
+  if(du){target=+du[1]*(/小时|hour|hr|^h$/i.test(du[2])?60:1);unit=LI()?'min':'分钟';cut.push(rx(du[0]));}
+  else{const cn=s.match(/(\d+)\s*(杯|次|页|个|篇|道|组|公里|千米|km|下|cups?|pages?|reps?|times?|words?|km)/i);
+    if(cn){target=+cn[1];unit=cn[2];cut.push(rx(cn[0]));}}
+  let title=s;cut.forEach(r=>title=title.replace(r,' '));
+  title=title.replace(/每天|每日|天天|早上|上午|中午|下午|晚上|夜里|睡前|提醒我?|记得|我要|要去?|打卡|一下|之前|前|半/g,' ')
+    .replace(/\b(every ?day|daily|each day|remind me( to)?|i want to|i will|go|at|in the|morning|afternoon|evening|night|tonight|am|pm)\b/gi,' ')
+    .replace(/\s+/g,LI()?' ':'').trim();
+  if(!title)title=raw.trim().slice(0,14)||(LI()?'New task':'新任务');
+  return {title,days,time,target,unit:target?unit:'',type:target?'count':'bool',icon:iconFor(title)};
+}
+
+/* ===================== 计算 ===================== */
+function dueTasks(k){k=k||todayKey();const d=dow(k);return S.tasks.filter(x=>!x.arch&&x.days.includes(d)&&x.start<=k);}
+function log(k,id){return (S.logs[k]||{})[id]||null;}
+function isDone(k,x){const l=log(k,x.id);if(!l)return false;return x.type==='count'?(l.count||0)>=x.target:!!l.done;}
+function dayRate(k){const d=dueTasks(k);if(!d.length)return null;return d.filter(x=>isDone(k,x)).length/d.length;}
+function totalDone(s){let n=0;for(const k in s.logs)for(const i in s.logs[k]){const l=s.logs[k][i];if(l.done||l.count)n++;}return n;}
+function countPics(s){let n=0;for(const k in s.logs)for(const i in s.logs[k])if(s.logs[k][i].img)n++;return n;}
+function recomputeStreak(){
+  const prev=S.streak.cur||0;let k=todayKey(),cur=0;
+  if(dayRate(k)===1)cur=1;
+  k=dayAdd(k,-1);
+  for(let i=0;i<500;i++){const r=dayRate(k);if(r===null){k=dayAdd(k,-1);continue;}if(r===1)cur++;else break;k=dayAdd(k,-1);}
+  S.streak.cur=cur;S.streak.best=Math.max(S.streak.best,cur);
+  if(prev>=3&&cur===0&&S.streak.noticed!==todayKey()){S.streak.noticed=todayKey();
+    setTimeout(()=>toast(S.set.gentle?t('tStreakG',prev):pk('brk').split('{n}').join(prev)),1500);}
+}
+function checkBadges(){
+  const got=[];BADGES.forEach(b=>{if(!S.badges.includes(b.id)&&b.c(S)){S.badges.push(b.id);got.push(b.e+' '+b.n[LI()]);}});
+  if(got.length)setTimeout(()=>toast(t('tBadge',got.join(', '))),700);
+}
+function rangeStats(from,to){
+  let tot=0,dn=0,det={},days=[],run=0,best=0;
+  if(from<S.created)from=S.created;
+  for(let k=from;k<=to;k=dayAdd(k,1)){
+    const due=dueTasks(k),d=due.filter(x=>isDone(k,x)).length;
+    tot+=due.length;dn+=d;days.push({k,due:due.length,done:d});
+    if(due.length&&d===due.length){run++;best=Math.max(best,run);}else if(due.length)run=0;
+    due.forEach(x=>{det[x.id]=det[x.id]||{t:x,due:0,done:0};det[x.id].due++;if(isDone(k,x))det[x.id].done++;});
+  }
+  const arr=Object.values(det).filter(x=>x.due>=2).sort((a,b)=>(b.done/b.due)-(a.done/a.due));
+  return {tot,dn,rate:tot?dn/tot:0,days,best:arr[0],worst:arr[arr.length-1],streak:best};
+}
+function verdict(kind,rate,checks){
+  const tiers=VERDICT[kind][LI()];
+  const hit=tiers.find(([lim])=>rate>=lim||lim===0);
+  const cands=tiers.filter(([lim])=>lim===hit[0]);
+  const txt=pick(cands)[1];
+  return txt.split('{P}').join(Math.round(rate*100)).split('{N}').join(checks);
+}
+
+/* ===================== 今日 ===================== */
+function roastNow(){
+  const k=todayKey(),due=dueTasks(k),pend=due.filter(x=>!isDone(k,x));
+  if(!due.length)return{tag:t('tagEmpty'),txt:t('emptyRoast'),b:brain(),calm:true};
+  if(!pend.length)return{tag:t('tagClear'),txt:S.set.gentle?(LI()?'Everything done today. Noted.':'今天全部完成了，给自己记一笔。'):pk('praise'),b:brain(),calm:true};
+  if(S.set.gentle)return{tag:t('tagLeft',pend.length),txt:pk('gentle'),b:brain(),calm:true};
+  const late=pend.map(x=>({x,over:x.time?nowMin()-t2m(x.time):-1})).filter(o=>o.over>0).sort((a,b)=>b.over-a.over)[0];
+  if(late&&late.over>10){
+    const h=Math.floor(late.over/60),m=late.over%60;
+    const dur=LI()?((h?h+'h ':'')+(m?m+'m':'')).trim():((h?h+'小时':'')+(m?m+'分钟':''));
+    return{tag:late.x.title,txt:pk('late').split('{m}').join(dur),b:brain()};
+  }
+  return{tag:t('tagLeft',pend.length),txt:pk('spicy'),b:brain()};
+}
+function taskJab(x){
+  if(S.set.gentle||!x.time)return '';
+  const over=nowMin()-t2m(x.time);if(over<=15)return '';
+  const h=Math.floor(over/60),m=over%60,s=(h?h+'h':'')+(m?m+'m':'');
+  return pk('jab',seedRand(x.id.length*7+new Date().getHours())).split('{s}').join(s);
+}
+function viewToday(){
+  const k=todayKey(),d=new Date(),due=dueTasks(k),done=due.filter(x=>isDone(k,x)).length,r=roastNow();
+  const wd=T.wd[LI()][d.getDay()];
+  const moTxt=LI()?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]:(d.getMonth()+1);
+  let h=`<div class="hero"><div class="ghost">${d.getDate()}</div><h1>${t('heroToday')}</h1>
+    <div class="meta">${due.length?t('metaLeft',wd,moTxt,due.length-done):t('metaNone',wd,moTxt)}</div></div>
+  <div class="stats">
+    <div class="stat ${done&&done===due.length?'on':''}"><div class="n">${done}<small>/${due.length}</small></div><div class="l">${t('sDone')}</div></div>
+    <div class="stat"><div class="n">${S.streak.cur}</div><div class="l">${t('sStreak')}</div></div>
+    <div class="stat"><div class="n">${S.points}</div><div class="l">${t('sPoints')}</div></div>
+  </div>
+  <div class="roast ${r.calm?'calm':''}"><span class="tag">${esc(r.tag)}</span><p>${esc(r.txt)}</p>
+    <div class="brain"><b>${esc(r.b[0])}</b> · ${esc(r.b[1])}</div></div>
+  <div class="shead"><h2>${t('tasks')}</h2><span>${t('tapToCheck')}</span></div><div class="list" id="list"></div>`;
+  D('view').innerHTML=h;
+  const L=D('list');
+  if(!due.length){L.innerHTML=`<div class="empty">${t('emptyList')}</div>`;return;}
+  due.sort((a,b)=>(isDone(k,a)-isDone(k,b))||((t2m(a.time)==null?1e4:t2m(a.time))-(t2m(b.time)==null?1e4:t2m(b.time))));
+  due.forEach(x=>{
+    const l=log(k,x.id),dn=isDone(k,x),jab=dn?'':taskJab(x);
+    const sub=[x.time||t('anytime'),x.type==='count'?`${(l&&l.count)||0}/${x.target} ${x.unit||''}`:'',l&&l.note?'📝':''].filter(Boolean).join(' · ');
+    const n=el(`<div class="task ${dn?'done':''} ${jab?'late':''}">
+      <div class="ico">${x.icon}</div>
+      <div class="mid"><div class="tt">${esc(x.title)}</div><div class="ts">${esc(sub)}</div>
+      ${x.type==='count'?`<div class="prog"><i style="width:${Math.min(100,((l&&l.count)||0)/x.target*100)}%"></i></div>`:''}
+      ${jab?`<div class="jab">${esc(jab)}</div>`:''}</div>
+      <div class="check"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#12140F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>`);
+    n.onclick=()=>openCheckin(x);L.appendChild(n);
+  });
+  const rb=document.querySelector('.roast');
+  if(rb) rb.onclick=refreshRoast;
+  startRoastTicker();
+}
+let _roastTimer=null;
+function refreshRoast(){
+  const rb=document.querySelector('.roast'); if(!rb) return;
+  const r=roastNow();
+  rb.className='roast '+(r.calm?'calm':'');
+  rb.innerHTML=`<span class="tag">${esc(r.tag)}</span><p>${esc(r.txt)}</p>
+    <div class="brain"><b>${esc(r.b[0])}</b> · ${esc(r.b[1])}</div>`;
+  rb.onclick=refreshRoast;
+}
+function startRoastTicker(){
+  stopRoastTicker();
+  _roastTimer=setInterval(()=>{
+    if(tab!=='today') return stopRoastTicker();
+    if(D('sheet').classList.contains('on')) return;
+    refreshRoast();
+  }, 45000);
+}
+function stopRoastTicker(){ if(_roastTimer){clearInterval(_roastTimer);_roastTimer=null;} }
+
+/* ===================== 打卡 ===================== */
+const stepOf=x=>x.target>=30?5:1;
+function shrink(file,max=780,q=.62){return new Promise(res=>{const r=new FileReader();
+  r.onload=()=>{const i=new Image();i.onload=()=>{const s=Math.min(1,max/Math.max(i.width,i.height));
+    const c=document.createElement('canvas');c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);
+    c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q));};i.src=r.result;};
+  r.readAsDataURL(file);});}
+async function openCheckin(x){
+  const k=todayKey();let l=Object.assign({count:0,note:'',img:false},log(k,x.id)||{});
+  let img=l.img?await sGet('dg_img_'+k+'_'+x.id):null;const dn=isDone(k,x);
+  const up=`<label class="upload"><span class="p">📷</span><span>${t('ckPhoto')}</span><input type="file" accept="image/*" id="file" style="display:none"></label>`;
+  sheet(`<h3>${x.icon} ${esc(x.title)}</h3>
+  ${x.type==='count'?`<div class="field"><label>${t('ckCount',esc(x.unit||''),x.target)}</label>
+    <div class="stepper"><button id="mi">−</button><div class="v" id="cv">${l.count||0}</div><button id="pl">+</button>
+    <button class="chip" id="full" style="margin-left:auto">${t('ckFull')}</button></div></div>`:''}
+  <div class="field"><label>${t('ckNote')}</label><textarea id="note" placeholder="${t('ckNotePh')}">${esc(l.note||'')}</textarea></div>
+  <div id="picbox">${img?`<div class="picwrap"><img src="${img}"><button class="rm" id="rmpic">×</button></div>`:up}</div>
+  <button class="btn lime" id="ok">${dn?t('ckUpdate'):t('ckDone')}</button>
+  ${dn?`<button class="btn ghost" id="undo">${t('ckUndo')}</button>`:''}
+  <button class="btn ghost" id="edit">${t('ckEdit')}</button>`);
+  const H=D('sheet');let cv=l.count||0;
+  const upd=()=>{const e=H.querySelector('#cv');if(e)e.textContent=cv;};
+  H.querySelector('#mi')&&(H.querySelector('#mi').onclick=()=>{cv=Math.max(0,cv-stepOf(x));upd();});
+  H.querySelector('#pl')&&(H.querySelector('#pl').onclick=()=>{cv+=stepOf(x);upd();});
+  H.querySelector('#full')&&(H.querySelector('#full').onclick=()=>{cv=x.target;upd();});
+  const bindF=()=>{const f=H.querySelector('#file');if(!f)return;
+    f.onchange=async e=>{const file=e.target.files[0];if(!file)return;toast(t('tShrink'));img=await shrink(file);
+      H.querySelector('#picbox').innerHTML=`<div class="picwrap"><img src="${img}"><button class="rm" id="rmpic">×</button></div>`;bindR();};};
+  const bindR=()=>{const r=H.querySelector('#rmpic');if(r)r.onclick=()=>{img=null;H.querySelector('#picbox').innerHTML=up;bindF();};};
+  bindF();bindR();
+  H.querySelector('#ok').onclick=async()=>{
+    const note=H.querySelector('#note').value.trim(),was=dn;
+    S.logs[k]=S.logs[k]||{};
+    S.logs[k][x.id]={done:x.type==='count'?cv>=x.target:true,count:x.type==='count'?cv:1,note,img:!!img,ts:Date.now()};
+    if(img)await sSet('dg_img_'+k+'_'+x.id,img);
+    let earned=0;
+    if(!was&&isDone(k,x)){earned=10+Math.min(15,S.streak.cur);S.points+=earned;
+      if(dueTasks(k).every(y=>isDone(k,y))){S.points+=30;earned+=30;}}
+    recomputeStreak();checkBadges();save();closeSheet();
+    if(earned)setTimeout(()=>reward(x,earned,note,img),260);else{render();toast(t('tUpdated'));}
+  };
+  H.querySelector('#undo')&&(H.querySelector('#undo').onclick=()=>{delete S.logs[k][x.id];recomputeStreak();save();closeSheet();render();
+    toast(S.set.gentle?t('tUndoG'):t('tUndo'));});
+  H.querySelector('#edit').onclick=()=>{closeSheet();setTimeout(()=>openAdd(x),240);};
+}
+function reward(x,pts,note,img){
+  const b=brain();
+  sheet(`<div class="pop"><div class="e">${x.icon}</div><h4>+${pts}</h4>
+    <p>${esc(x.title)} · ${todayKey()}<br>${t('streakN',S.streak.cur)}</p></div>
+    ${img?`<div class="picwrap"><img src="${img}"></div>`:''}
+    ${note?`<div class="field"><label>${t('youWrote')}</label><div style="font-size:15px;line-height:1.7;font-weight:500">${esc(note)}</div></div>`:''}
+    <div class="roast calm" style="margin-bottom:14px"><span class="tag">${esc(b[0])}</span><p style="font-size:15px;font-weight:600">${esc(b[1])}</p></div>
+    <button class="btn" id="cl">${t('takeIt')}</button>`);
+  D('sheet').querySelector('#cl').onclick=()=>{closeSheet();render();};
+}
+
+/* ===================== 添加 / 编辑 ===================== */
+function openAdd(edit){
+  const e=edit||{};
+  sheet(`<h3>${edit?t('editTask'):t('newTask')}</h3>
+  ${edit?'':`<button class="mic" id="mic"><span>🎙</span><span id="micT">${t('micIdle')}</span></button>
+  <div class="chips">${PRESET.map((p,i)=>`<button class="chip" data-p="${i}">${p.i} ${p.n[LI()]}</button>`).join('')}</div>`}
+  <div class="field"><label>${t('fWhat')}</label><input id="ti" placeholder="${t('fWhatPh')}" value="${esc(e.title||'')}"></div>
+  <div class="row"><div class="field"><label>${t('fTime')}</label><input id="tm" type="time" value="${e.time||''}"></div>
+  <div class="field"><label>${t('fGoal')}</label><input id="tg" inputmode="numeric" placeholder="${t('fGoalPh')}" value="${e.target||''}"></div></div>
+  <div class="field"><label>${t('fUnit')}</label><input id="un" placeholder="${t('fUnitPh')}" value="${esc(e.unit||'')}"></div>
+  <div class="field"><label>${t('fRepeat')}</label><div class="chips" id="dw" style="margin:6px 0 0">
+    ${T.wd[LI()].map((w,i)=>`<button class="chip ${(e.days||[0,1,2,3,4,5,6]).includes(i)?'on':''}" data-d="${i}">${LI()?w:w[1]}</button>`).join('')}
+  </div></div>
+  <button class="btn lime" id="sv">${edit?t('fSave'):t('fAdd')}</button>
+  ${edit?`<button class="btn ghost" id="del">${t('fDel')}</button>`:''}`);
+  const H=D('sheet');
+  const setV=o=>{H.querySelector('#ti').value=o.title;H.querySelector('#tm').value=o.time||'';
+    H.querySelector('#tg').value=o.target||'';H.querySelector('#un').value=o.unit||'';
+    H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',(o.days||[0,1,2,3,4,5,6]).includes(+c.dataset.d)));};
+  H.querySelectorAll('#dw .chip').forEach(c=>c.onclick=()=>c.classList.toggle('on'));
+  H.querySelectorAll('.chip[data-p]').forEach(c=>c.onclick=()=>{const p=PRESET[+c.dataset.p];
+    setV({title:p.n[LI()],time:p.time,target:p.target,unit:p.unit[LI()],days:[0,1,2,3,4,5,6]});});
+  const ti=H.querySelector('#ti');
+  ti.addEventListener('blur',()=>{if(edit||ti.value.trim().length<5)return;const p=parseTask(ti.value);
+    if(!H.querySelector('#tm').value&&p.time)H.querySelector('#tm').value=p.time;
+    if(!H.querySelector('#tg').value&&p.target){H.querySelector('#tg').value=p.target;H.querySelector('#un').value=p.unit||'';}
+    H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',p.days.includes(+c.dataset.d)));
+    ti.value=p.title;});
+  const mic=H.querySelector('#mic');
+  if(mic){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){H.querySelector('#micT').textContent=t('micNo');mic.style.opacity=.5;}
+    else mic.onclick=()=>{const r=new SR();r.lang=LI()?'en-US':'zh-CN';r.interimResults=false;
+      mic.classList.add('rec');H.querySelector('#micT').textContent=t('micListen');
+      r.onresult=ev=>{const txt=ev.results[0][0].transcript;setV(parseTask(txt));toast(t('micHeard',txt));};
+      r.onerror=()=>{H.querySelector('#micT').textContent=t('micNo');};
+      r.onend=()=>{mic.classList.remove('rec');if(H.querySelector('#micT').textContent===t('micListen'))H.querySelector('#micT').textContent=t('micRetry');};
+      try{r.start()}catch(x){mic.classList.remove('rec')}};}
+  H.querySelector('#sv').onclick=()=>{
+    const title=H.querySelector('#ti').value.trim();if(!title)return toast(t('tName'));
+    const days=[...H.querySelectorAll('#dw .chip.on')].map(c=>+c.dataset.d);
+    const tg=parseInt(H.querySelector('#tg').value)||0;
+    const o={title,time:H.querySelector('#tm').value||'',target:tg,unit:H.querySelector('#un').value.trim(),
+      type:tg>0?'count':'bool',days:days.length?days:[0,1,2,3,4,5,6],icon:iconFor(title)};
+    if(edit){Object.assign(edit,o);toast(t('tSaved'));}
+    else{S.tasks.push(Object.assign({id:'t'+Date.now().toString(36),start:todayKey(),arch:false},o));
+      toast(S.set.gentle?t('tAddedG'):t('tAdded'));}
+    save();closeSheet();render();};
+  H.querySelector('#del')&&(H.querySelector('#del').onclick=()=>{edit.arch=true;save();closeSheet();render();toast(t('tDel'));});
+}
+
+/* ===================== 排行榜 ===================== */
+function botScores(){
+  const days=Math.max(1,Math.round((Date.now()-dateOf(S.created).getTime())/864e5)+1);
+  return BOTS.map((b,i)=>({name:b.n[LI()],av:b.a,bot:true,
+    pts:Math.round(b.r*days*(0.85+seedRand(i+days)*0.32)),streak:Math.min(days,Math.round(days*(b.r/90)))}));
+}
+async function viewBoard(){
+  D('view').innerHTML=`<div class="hero"><div class="ghost">${S.points}</div><h1>${t('heroBoard')}</h1>
+    <div class="meta">${t('boardSub')}</div></div><div id="lb"><div class="empty">…</div></div>`;
+  let rows=botScores();
+  rows.push({name:S.set.name||(LI()?'You':'我'),av:'🫵',pts:S.points,me:true,streak:S.streak.cur});
+  if(S.set.public){try{
+    const r=await window.storage.list('dglb:',true);
+    for(const k of (r&&r.keys||[]).filter(x=>x!=='dglb:'+S.uid).slice(0,18)){
+      const g=await sGet(k,true);if(!g)continue;const o=JSON.parse(g);
+      if(o&&o.name)rows.push({name:o.name,av:'🙂',pts:o.pts|0,streak:o.streak|0,real:true});}
+  }catch(e){}}
+  rows.sort((a,b)=>b.pts-a.pts);
+  const my=rows.findIndex(r=>r.me)+1,top=rows.slice(0,3),rest=rows.slice(3);
+  const taunt=S.set.gentle?(LI()?`You're #${my}. Compare with yourself, that's enough.`:`你排在第 ${my} 名，和自己比就够了。`)
+    :(my<=3?(LI()?'Top three. Screenshot it, might not happen twice.':'前三。截个图吧，可能不会有第二次。')
+    :my<=rows.length/2?(LI()?`#${my}. Mid-table — the easiest place to hide.`:`第 ${my} 名。不上不下，最容易混过去的位置。`)
+    :(LI()?`#${my}, ${rows.length-my+1} from the bottom. Everyone above you also gets 24 hours.`:`第 ${my} 名，倒数第 ${rows.length-my+1}。上面那些人也是一天二十四小时。`));
+  const b=brain(8);
+  let h=`<div class="podium">${[1,0,2].map(i=>{const x=top[i];if(!x)return '<div></div>';
+    return `<div class="pod ${i===0?'first':''}"><div class="av">${x.av}</div><div class="nm">${esc(x.name)}</div><div class="pt">${x.pts}</div></div>`;}).join('')}</div>
+  <div class="roast ${S.set.gentle?'calm':''}" style="margin-bottom:18px"><span class="tag">${t('yourSpot')}</span><p>${esc(taunt)}</p>
+    <div class="brain"><b>${esc(b[0])}</b> · ${esc(b[1])}</div></div>
+  <div class="shead"><h2>${t('fullList')}</h2><span>${t('people',rows.length)}</span></div>
+  ${rest.map((r,i)=>`<div class="rank ${r.me?'me':''}"><div class="i">${i+4}</div><div class="av">${r.av}</div>
+    <div class="nm">${esc(r.name)}<em>${t('streakN',r.streak)} · ${r.me?'':(r.real?'<span class="dot"></span>'+t('realTag'):t('botTag'))}</em></div>
+    <div class="pt">${r.pts}</div></div>`).join('')}
+  <p class="hint" style="margin-top:14px">${t('botNote')}</p>
+  <div class="shead"><h2>${t('goPublic')}</h2></div>
+  <div class="sw"><div><b>${t('pubTitle')}</b><em>${t('pubDesc')}</em></div><div class="tog ${S.set.public?'on':''}" id="pub"><i></i></div></div>
+  <div class="field"><label>${t('nickname')}</label><input id="nm" value="${esc(S.set.name||'')}" placeholder="${LI()?'You':'我'}"></div>`;
+  D('lb').innerHTML=h;
+  D('pub').onclick=async()=>{S.set.public=!S.set.public;
+    if(S.set.public){S.set.name=D('nm').value.trim()||(LI()?'Anonymous':'匿名选手');
+      await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,ts:Date.now()}),true);toast(t('onBoard'));}
+    else{try{await window.storage.delete('dglb:'+S.uid,true)}catch(e){}toast(t('offBoard'));}
+    save();render();};
+  D('nm').onchange=ev=>{S.set.name=ev.target.value.trim();save();};
+}
+
+/* ===================== 奖励 ===================== */
+function ensureDefaultTasks(){
+  const now=LI()?'en':'zh';
+  const zh=[
+    {id:'t1',title:'喝水',icon:'💧',type:'count',target:8,unit:'杯',time:'09:00',days:[0,1,2,3,4,5,6],start:todayKey(),_d:1},
+    {id:'t2',title:'阅读',icon:'📖',type:'count',target:20,unit:'页',time:'21:00',days:[0,1,2,3,4,5,6],start:todayKey(),_d:1},
+    {id:'t3',title:'运动',icon:'🏃',type:'count',target:30,unit:'分钟',time:'19:00',days:[1,2,3,4,5],start:todayKey(),_d:1}
+  ];
+  const en=[
+    {id:'t1',title:'Water',icon:'💧',type:'count',target:8,unit:'cups',time:'09:00',days:[0,1,2,3,4,5,6],start:todayKey(),_d:1},
+    {id:'t2',title:'Read',icon:'📖',type:'count',target:20,unit:'pages',time:'21:00',days:[0,1,2,3,4,5,6],start:todayKey(),_d:1},
+    {id:'t3',title:'Move',icon:'🏃',type:'count',target:30,unit:'min',time:'19:00',days:[1,2,3,4,5],start:todayKey(),_d:1}
+  ];
+  const noLogs=Object.keys(S.logs||{}).length===0;
+  const allDefault=S.tasks.length&&S.tasks.every(t=>t._d);
+  // 首次进入或原装未动过 → 用当前语言重建
+  if(!S.tasks.length || (allDefault && noLogs && S.tasksLang!==now)){
+    S.tasks = (now==='en'?en:zh);
+    S.tasksLang = now;
+    save();
+  }
+}
+function ensureDefaultRewards(){
+  const now=LI()?'en':'zh';
+  const zh=[{e:'🧋',t:'一杯奶茶',c:300,_d:1},{e:'🎮',t:'放肆玩两小时',c:500,_d:1},{e:'🛌',t:'心安理得睡懒觉',c:800,_d:1}];
+  const en=[{e:'🧋',t:'One bubble tea',c:300,_d:1},{e:'🎮',t:'Two hours of games, guilt-free',c:500,_d:1},{e:'🛌',t:'Sleep in without shame',c:800,_d:1}];
+  const isDefaultOnly = S.rewards.length===3 && S.rewards.every(r=>r._d && !r.got);
+  if(!S.rewards.length || (isDefaultOnly && S.rewardsLang!==now)){
+    S.rewards = (now==='en'?en:zh);
+    S.rewardsLang = now;
+  }
+}
+/* ===================== 导入 / 导出 ===================== */
+async function exportData(){
+  const images={};
+  try{
+    const r=await window.storage.list('dg_img_',false);
+    for(const k of (r&&r.keys)||[]){
+      const v=await sGet(k);
+      if(v) images[k]=v;
+    }
+  }catch(e){}
+  const pack={version:'dg-v4',exportedAt:new Date().toISOString(),state:S,images};
+  const blob=new Blob([JSON.stringify(pack)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`flaked-backup-${todayKey()}.json`;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},200);
+  toast(LI()?'Backup downloaded.':'备份已下载。');
+}
+function importData(){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='.json,application/json';
+  inp.onchange=async ev=>{
+    const f=ev.target.files[0]; if(!f) return;
+    let pack;
+    try{ pack=JSON.parse(await f.text()); }
+    catch(e){ return toast(LI()?'Not a valid JSON.':'不是有效的 JSON。'); }
+    if(!pack||!pack.state||!pack.version||pack.version.indexOf('dg-')!==0)
+      return toast(LI()?'Not a valid backup.':'不是有效的备份。');
+    const when=(pack.exportedAt||'').slice(0,10);
+    const nTasks=(pack.state.tasks||[]).length;
+    const nLogs=Object.keys(pack.state.logs||{}).length;
+    sheet(`<h3>${LI()?'Import backup':'导入备份'}</h3>
+      <div class="field"><label>${LI()?'Backup info':'备份信息'}</label>
+        <div style="font-size:15px;line-height:1.7;font-weight:600">
+          ${LI()?'Exported':'导出时间'}: ${esc(when)}<br>
+          ${LI()?'Tasks':'任务数'}: ${nTasks}<br>
+          ${LI()?'Days logged':'打卡天数'}: ${nLogs}<br>
+          ${LI()?'Points':'积分'}: ${pack.state.points|0}
+        </div></div>
+      <p class="hint">${LI()?'This will replace ALL current data. Cannot be undone.':'这会覆盖当前所有数据，无法撤销。'}</p>
+      <button class="btn lime" id="okimp">${LI()?'Import and replace':'导入并覆盖'}</button>
+      <button class="btn ghost" id="cnimp">${LI()?'Cancel':'取消'}</button>`);
+    D('sheet').querySelector('#cnimp').onclick=closeSheet;
+    D('sheet').querySelector('#okimp').onclick=async()=>{
+      S=Object.assign(defaults(),pack.state);
+      S.set=Object.assign(defaults().set,pack.state.set||{});
+      S.streak=Object.assign({cur:0,best:0,noticed:null},pack.state.streak||{});
+      await sSet(KEY,JSON.stringify(S));
+      const imgs=pack.images||{};
+      for(const k in imgs){ try{ await sSet(k,imgs[k]); }catch(e){} }
+      recomputeStreak(); closeSheet(); render();
+      toast(LI()?'Imported. Welcome back.':'导入完成，欢迎回来。');
+    };
+  };
+  inp.click();
+}
+
+function viewReward(){
+  const L=T.lvNames[LI()];
+  const lv=S.points>=5000?[L[4],'🏆']:S.points>=2000?[L[3],'🔥']:S.points>=800?[L[2],'⚡']:S.points>=200?[L[1],'🌱']:[L[0],'🐣'];
+  ensureDefaultRewards();
+  D('view').innerHTML=`<div class="hero"><div class="ghost">${lv[1]}</div><h1>${t('heroReward')}</h1>
+    <div class="meta">${t('lvLabel',lv[0],S.freeze)}</div></div>
+  <div class="bigpoint"><div class="n">${S.points}</div><div class="l">${t('ptsAvail',totalDone(S))}</div></div>
+  <div class="rw"><div class="e">🎲</div><div class="m"><b>${t('boxTitle')}</b><em>${t('boxDesc')}</em></div>
+    <button class="go ${S.points<60?'no':''}" id="box">${t('boxOpen')}</button></div>
+  <div class="shead"><h2>${t('myRewards')}</h2></div><div id="rws"></div>
+  <button class="btn ghost" id="addrw">${t('addReward')}</button>
+  <div class="shead"><h2>${t('badgesT')}</h2><span>${S.badges.length}/${BADGES.length}</span></div>
+  <div class="badges">${BADGES.map(b=>`<div class="badge ${S.badges.includes(b.id)?'got':''}"><div class="e">${b.e}</div><div class="t">${b.n[LI()]}</div></div>`).join('')}</div>
+  <div class="shead"><h2>${t('settings')}</h2></div>
+  <div class="sw"><div><b>${t('gentleT')}</b><em>${t('gentleD')}</em></div><div class="tog ${S.set.gentle?'on':''}" id="gt"><i></i></div></div>
+  <div class="field"><label>${t('langT')}</label><div class="seg" style="margin:6px 0 0;box-shadow:none;padding:0;background:transparent">
+    <button class="${LI()?'':'on'}" data-l="zh">中文</button><button class="${LI()?'on':''}" data-l="en">English</button></div></div>`;
+  D('view').insertAdjacentHTML('beforeend', `
+  <div class="shead"><h2>${t('dataT')}</h2></div>
+  <div class="field"><label>${t('dataT')}</label>
+    <div style="font-size:13px;line-height:1.6;color:var(--sub);font-weight:500;margin-bottom:12px">${t('dataD')}</div>
+    <button class="btn lime" id="expBtn" style="margin-bottom:10px">${t('dataExport')}</button>
+    <button class="btn" id="impBtn">${t('dataImport')}</button>
+  </div>`);
+  D('expBtn').onclick=exportData;
+  D('impBtn').onclick=importData;
+  D('rws').innerHTML=S.rewards.map((r,i)=>`<div class="rw"><div class="e">${r.e}</div>
+    <div class="m"><b>${esc(r.t)}</b><em>${r.c} ${LI()?'pts':'分'}${r.got?' · '+t('rwGot',r.got):''}</em></div>
+    <button class="go ${S.points<r.c?'no':''}" data-i="${i}">${t('redeem')}</button></div>`).join('');
+  D('rws').querySelectorAll('.go').forEach(b=>b.onclick=()=>{const r=S.rewards[+b.dataset.i];
+    if(S.points<r.c)return toast(S.set.gentle?t('tPoorG'):t('tPoor'));
+    S.points-=r.c;r.got=(r.got||0)+1;save();render();toast(S.set.gentle?t('tRedeemG'):t('tRedeem',r.t));});
+  D('addrw').onclick=()=>{
+    sheet(`<h3>${t('rwWant')}</h3>
+      <div class="field"><label>${t('rwWhat')}</label><input id="rt" placeholder="${t('rwWhatPh')}"></div>
+      <div class="row"><div class="field"><label>${t('rwEmoji')}</label><input id="re" value="🎁"></div>
+      <div class="field"><label>${t('rwCost')}</label><input id="rc" inputmode="numeric" value="300"></div></div>
+      <p class="hint">${t('rwHint')}</p><button class="btn lime" id="ok">${t('rwAdd')}</button>`);
+    D('sheet').querySelector('#ok').onclick=()=>{const v=D('sheet').querySelector('#rt').value.trim();if(!v)return toast(t('tWant'));
+      S.rewards.push({e:D('sheet').querySelector('#re').value.trim()||'🎁',t:v,c:Math.max(10,parseInt(D('sheet').querySelector('#rc').value)||300)});
+      save();closeSheet();render();};};
+  D('box').onclick=()=>{
+    if(S.points<60)return toast(S.set.gentle?t('tPoorG'):t('tBoxPoor'));
+    S.points-=60;S.boxes++;const roll=Math.random();let o;
+    const Z=LI();
+    if(roll<.34)o={e:'🪙',t:'+20',f:()=>S.points+=20,d:Z?'Floor prize. Not a total loss.':'保底。没亏光。'};
+    else if(roll<.58)o={e:'💰',t:'+50',f:()=>S.points+=50,d:Z?'Small win.':'小赚。'};
+    else if(roll<.74)o={e:'💎',t:'+120',f:()=>S.points+=120,d:Z?'Good pull.':'手气不错。'};
+    else if(roll<.80)o={e:'👑',t:'+300',f:()=>S.points+=300,d:Z?'Rare. Spend it well.':'稀有。别乱花。'};
+    else if(roll<.92)o={e:'🛡',t:Z?'Skip pass ×1':'免鸽卡 ×1',f:()=>S.freeze++,d:Z?'Covers the day you break.':'断签那天自动顶上。'};
+    else o={e:'🌫',t:Z?'Nothing':'空的',f:()=>{},d:Z?'Empty. This is exactly how you get hooked.':'什么都没有。你就是这么被钓住的。'};
+    o.f();checkBadges();save();
+    sheet(`<div class="pop"><div class="e">${o.e}</div><h4>${o.t}</h4><p>${o.d}<br>${S.points} ${Z?'left':'分剩余'}</p></div>
+      <button class="btn lime" id="a">${t('boxAgain')}</button><button class="btn ghost" id="b">${t('boxStop')}</button>`);
+    D('sheet').querySelector('#a').onclick=()=>{closeSheet();setTimeout(()=>{render();D('box').click();},240);};
+    D('sheet').querySelector('#b').onclick=()=>{closeSheet();render();};};
+  D('gt').onclick=()=>{S.set.gentle=!S.set.gentle;save();render();toast(S.set.gentle?t('tGentleOn'):t('tGentleOff'));};
+  D('view').querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.set.lang=b.dataset.l;ensureDefaultTasks();ensureDefaultRewards();save();render();});
+}
+
+/* ===================== 战报：周 / 季 / 年 ===================== */
+function weekKeyOf(k){const d=dateOf(k);d.setDate(d.getDate()-((d.getDay()+6)%7));return todayKey(d);}
+function quarterStart(){const d=new Date();return todayKey(new Date(d.getFullYear(),Math.floor(d.getMonth()/3)*3,1));}
+function yearStart(){return todayKey(new Date(new Date().getFullYear(),0,1));}
+function bucketBars(days,kind){
+  if(kind==='week')return days.map((d,i)=>({label:T.wdShort[LI()][i],done:d.done,due:d.due}));
+  const map={};
+  days.forEach(d=>{const key=kind==='quarter'?weekKeyOf(d.k):d.k.slice(0,7);
+    map[key]=map[key]||{done:0,due:0,k:d.k};map[key].done+=d.done;map[key].due+=d.due;});
+  const keys=Object.keys(map).sort();
+  return keys.map((key,i)=>({label:kind==='quarter'?(i%2?'':String(i+1)):T.mon[LI()][+key.slice(5,7)-1],
+    done:map[key].done,due:map[key].due}));
+}
+async function viewReport(){
+  const kind=period,to=todayKey();
+  const from=kind==='week'?weekKeyOf(to):kind==='quarter'?quarterStart():yearStart();
+  const r=rangeStats(from,to),bars=bucketBars(r.days,kind),mx=Math.max(1,...bars.map(b=>b.due||1));
+  const hero=kind==='week'?t('heroWeek'):kind==='quarter'?t('heroQ'):t('heroY');
+  const sum=kind==='week'?t('sumWeek'):kind==='quarter'?t('sumQ'):t('sumY');
+  const txt=S.set.gentle?(LI()?`${r.dn} of ${r.tot} done. Ups and downs, that's normal.`:`完成了 ${r.dn}/${r.tot}。有起有落，很正常。`)
+    :verdict(kind,r.rate,r.dn);
+  const bestTxt=r.best&&r.best.done?(LI()?`Steadiest: ${r.best.t.title} (${r.best.done}/${r.best.due}). `:`最稳的是「${r.best.t.title}」，${r.best.done}/${r.best.due}。`):'';
+  const worstTxt=r.worst&&r.worst!==r.best?(LI()?`Most skipped: ${r.worst.t.title} (${r.worst.done}/${r.worst.due}).`:`最爱鸽的是「${r.worst.t.title}」，${r.worst.due} 次里做了 ${r.worst.done} 次。`):'';
+  const w=r.worst&&r.worst.t;
+  const rx=kind==='week'
+    ?(w?(LI()?`Next week, write it down as a rule: "when it hits ${w.time||'after dinner'}, I do ${w.title}". No "if I feel like it". The decision gets made once instead of every day.`
+         :`下周就这么写死：「${w.time||'晚饭后'}一到，我就去做${w.title}」。别留"看情况"的余地。决策提前做完，你就不用每天再跟自己谈判一次。`)
+       :(LI()?'Give every task a time and a place next week, not just a name.':'下周给每个任务都配上"什么时候、在哪儿做"，别只写要做什么。'))
+    :kind==='quarter'
+    ?(LI()?`Pick one thing for next quarter, not five. Your longest streak was ${r.streak} days — that's the ceiling you already proved you can hit. Aim to double it, not to add tasks.`
+         :`下个季度只挑一件事，别铺五件。这三个月你最长连签 ${r.streak} 天，那是你已经证明过的上限。目标是把它翻倍，不是加任务。`)
+    :(LI()?`One year of data says your ceiling is a ${r.streak}-day run. Habits that survive are the ones attached to something already fixed in your day. Bolt next year's onto an existing anchor instead of inventing a new slot.`
+         :`一年的数据摆在这：你的上限是连续 ${r.streak} 天。活下来的习惯，都是挂在你本来就固定的事情上的。明年别再新开时段，挂到已有的锚点上。`);
+  const b=brain(kind.length);
+  let h=`<div class="hero"><div class="ghost">${Math.round(r.rate*100)}</div><h1>${hero}</h1>
+    <div class="meta">${t('rangeMeta',from.slice(5),r.dn,r.tot)}</div></div>
+  <div class="seg" id="pseg">
+    <button data-p="week" class="${kind==='week'?'on':''}">${t('pWeek')}</button>
+    <button data-p="quarter" class="${kind==='quarter'?'on':''}">${t('pQuarter')}</button>
+    <button data-p="year" class="${kind==='year'?'on':''}">${t('pYear')}</button></div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="bars">${bars.map(x=>{const hh=x.due?Math.max(6,x.done/mx*100):4;
+      return `<div class="${x.due&&x.done===x.due?'hi':(x.done?'':'zero')}" style="height:${hh}%"></div>`;}).join('')}</div>
+    <div class="blabel">${bars.map(x=>`<span>${x.label}</span>`).join('')}</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">${Math.round(r.rate*100)}<small>%</small></div><div class="l">${t('statRate')}</div></div>
+    <div class="stat"><div class="n">${r.dn}</div><div class="l">${t('statChecks')}</div></div>
+    <div class="stat"><div class="n">${r.streak}</div><div class="l">${t('statBest')}</div></div>
+  </div>
+  <div class="roast ${S.set.gentle?'calm':''}"><span class="tag">${sum}</span><p>${esc(txt)}</p>
+    ${(bestTxt+worstTxt)?`<div class="brain">${esc(bestTxt+worstTxt)}</div>`:''}</div>`;
+  if(kind==='year'){
+    const tt=YEARTITLE[LI()].find(([lim])=>r.rate>=lim||lim===0)[1];
+    h+=`<div class="bigpoint" style="margin-bottom:16px"><div class="l" style="margin:0 0 10px">${t('title')}</div>
+      <div style="font-size:38px;font-weight:800;letter-spacing:-.05em;color:var(--lime)">${esc(tt)}</div></div>`;
+  }
+  h+=`<div class="card" style="margin-bottom:14px"><div style="font-size:11.5px;color:var(--sub);font-weight:700;margin-bottom:8px">${kind==='week'?t('rxTitle'):kind==='quarter'?t('rxTitleQ'):t('rxTitleY')}</div>
+    <div style="font-size:15px;line-height:1.7;font-weight:600">${esc(rx)}</div></div>
+  <div class="card" style="margin-bottom:16px"><div style="font-size:11.5px;color:var(--sub);font-weight:700;margin-bottom:8px">${esc(b[0])}</div>
+    <div style="font-size:14.5px;line-height:1.7">${esc(b[1])}</div></div>`;
+  if(S.history.length)h+=`<div class="shead"><h2>${t('past')}</h2><span>${t('pastN',S.history.length)}</span></div>`+
+    S.history.slice(-6).reverse().map(x=>`<div class="rank"><div class="i">${Math.round(x.rate*100)}%</div><div class="av">📄</div>
+      <div class="nm">${t('weekOf',x.week.slice(5))}<em>${esc(String(x.txt).slice(0,30))}…</em></div></div>`).join('');
+  h+=`<div class="shead"><h2>${t('wall')}</h2><span>${t('wallSub')}</span></div><div class="wall" id="wall"><div class="empty">${t('noPics')}</div></div>`;
+  D('view').innerHTML=h;
+  D('pseg').querySelectorAll('button').forEach(x=>x.onclick=()=>{period=x.dataset.p;viewReport();window.scrollTo(0,0);});
+  const pics=[];
+  for(const k of Object.keys(S.logs).sort().reverse())
+    for(const id in S.logs[k])if(S.logs[k][id].img&&pics.length<12)pics.push([k,id]);
+  if(pics.length){const W=D('wall');W.innerHTML='';
+    for(const[k,id]of pics){const src=await sGet('dg_img_'+k+'_'+id);
+      if(src)W.appendChild(el(`<div class="c"><img src="${src}"><div class="d">${k.slice(5)}</div></div>`));}
+    if(!W.children.length)W.innerHTML=`<div class="empty">${t('noPics')}</div>`;}
+}
+function maybeArchiveWeek(){
+  const lastMon=dayAdd(weekKeyOf(todayKey()),-7);
+  if(S.lastWeek===lastMon)return;
+  const r=rangeStats(lastMon,dayAdd(lastMon,6));
+  if(r.tot>0){S.history.push({week:lastMon,rate:r.rate,txt:verdict('week',r.rate,r.dn)});
+    setTimeout(()=>toast(t('tWeekly')),1400);}
+  S.lastWeek=lastMon;save();
+}
+
+/* ===================== 壳 ===================== */
+function renderNav(){
+  const names=T.nav[LI()],ic=['◎','▲','◆','▤'],ks=['today','board','reward','report'];
+  D('nav').innerHTML=ks.map((k,i)=>`<button class="${tab===k?'on':''}" data-t="${k}"><i>${ic[i]}</i>${names[i]}</button>`).join('');
+  D('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render();window.scrollTo(0,0);});
+}
+function render(){
+  document.documentElement.lang=LI()?'en':'zh-CN';
+  renderNav();
+  if(tab!=='today') stopRoastTicker();
+  if(tab==='today')viewToday();else if(tab==='board')viewBoard();else if(tab==='reward')viewReward();else viewReport();
+  D('fab').style.display=tab==='today'?'grid':'none';
+}
+function sheet(html){const s=D('sheet');s.innerHTML='<div class="grab"></div>'+html;s.classList.add('on');D('scrim').classList.add('on');}
+function closeSheet(){D('sheet').classList.remove('on');D('scrim').classList.remove('on');}
+D('scrim').onclick=closeSheet;
+D('fab').onclick=()=>openAdd(null);
+
+(async function init(){
+  const raw=await sGet(KEY);
+  if(raw){try{const o=JSON.parse(raw);S=Object.assign(defaults(),o);S.set=Object.assign(defaults().set,o.set||{});S.streak=Object.assign({cur:0,best:0,noticed:null},o.streak||{});}catch(e){}}
+  ensureDefaultTasks();
+  recomputeStreak();maybeArchiveWeek();render();
+  if(S.set.public)sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,ts:Date.now()}),true);
+})();
+</script>
+</body>
+</html>
