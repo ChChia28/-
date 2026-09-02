@@ -55,7 +55,7 @@ input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
 .shead h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-.03em}
 .shead span{font-size:12.5px;color:var(--sub);font-weight:600}
 .list{display:flex;flex-direction:column;gap:12px}
-.task{position:relative;background:var(--card);border-radius:26px;box-shadow:var(--sh);padding:18px;display:flex;gap:14px;align-items:center;transition:transform .16s ease}
+.task{position:relative;background:var(--card);border-radius:26px;box-shadow:var(--sh);padding:18px;display:flex;gap:14px;align-items:center;transition:transform .16s ease;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .task:active{transform:scale(.985)}
 .task .ico{width:46px;height:46px;flex:0 0 46px;border-radius:16px;background:var(--soft);display:grid;place-items:center;font-size:22px}
 .task .mid{flex:1;min-width:0}
@@ -79,6 +79,9 @@ input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
 .nav button{padding:11px 4px;border-radius:20px;color:#8E9197;font-size:11px;font-weight:700;display:grid;gap:4px;justify-items:center;transition:.18s}
 .nav button i{font-style:normal;font-size:17px;line-height:1}
 .nav button.on{background:var(--lime);color:#12140F}
+.settingsIcon{position:fixed;bottom:104px;right:calc(50% - 220px + 8px);z-index:58;width:44px;height:44px;border-radius:50%;background:transparent;color:#B4B5B0;display:grid;place-items:center;transition:all .18s}
+.settingsIcon:active{color:var(--ink);background:#EDEDE8;transform:scale(.94)}
+@media(max-width:440px){.settingsIcon{right:10px}}
 .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:59;width:58px;height:58px;border-radius:22px;
   background:var(--lime);color:#12140F;font-size:30px;display:grid;place-items:center;box-shadow:0 18px 34px -12px rgba(150,190,0,.85)}
 .fab:active{transform:translateX(-50%) scale(.94)}
@@ -98,9 +101,9 @@ input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
 .row{display:flex;gap:10px}
 .row .field{flex:1;margin-bottom:12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 2px 16px}
-.chip{background:var(--card);border-radius:18px;padding:10px 14px;font-size:13.5px;font-weight:600;box-shadow:0 6px 16px -12px rgba(14,16,19,.5)}
-.chip:active{background:var(--lime)}
-.chip.on{background:var(--dark);color:#fff}
+.chip{background:var(--dark);color:#B7BAC0;border-radius:18px;padding:10px 14px;font-size:13.5px;font-weight:600;box-shadow:0 4px 12px -8px rgba(14,16,19,.5);transition:background .15s,color .15s}
+.chip:active{transform:scale(.96)}
+.chip.on{background:#fff;color:var(--dark);box-shadow:0 6px 18px -8px rgba(14,16,19,.35)}
 .btn{width:100%;padding:19px;border-radius:24px;background:var(--dark);color:#fff;font-size:16px;font-weight:700;box-shadow:var(--shHi)}
 .btn.lime{background:var(--lime);color:#12140F}
 .btn.ghost{background:transparent;color:var(--sub);box-shadow:none;font-weight:600;padding:14px}
@@ -145,7 +148,7 @@ input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
 .badge.got{opacity:1;filter:none}
 .badge .e{font-size:24px}
 .badge .t{margin-top:6px;font-size:10px;font-weight:700;line-height:1.3}
-.rw{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:16px 18px;margin-bottom:10px}
+.rw{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:16px 18px;margin-bottom:10px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:pointer}
 .rw .e{font-size:22px}
 .rw .m{flex:1}
 .rw .m b{font-size:15px;font-weight:700}
@@ -176,12 +179,64 @@ input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
 .tog i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.18)}
 .tog.on{background:var(--limeDeep)}
 .tog.on i{left:23px}
+.avpick:active{transform:scale(.94)}
+.task.other{opacity:.72;background:transparent;box-shadow:0 4px 12px -12px rgba(14,16,19,.3);border:1px dashed #D5D5CE}
+.task.other .ico{filter:grayscale(.4)}
+.backBtn{background:transparent;color:var(--sub);font-size:13.5px;font-weight:600;padding:0}
+.backBtn:active{color:var(--ink)}
+.otherFold{margin:26px 6px 12px;display:flex;align-items:baseline;justify-content:space-between;cursor:pointer;-webkit-user-select:none;user-select:none}
+.otherFold h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:8px}
+.otherFold .chev{transition:transform .2s;color:var(--sub);font-size:11px;display:inline-block}
+.otherFold.open .chev{transform:rotate(90deg)}
+.otherFold .cnt{background:var(--soft);color:var(--sub);font-size:12px;font-weight:700;padding:3px 9px;border-radius:12px;margin-left:4px}
+.otherFold span.hint{font-size:12px;color:var(--sub);font-weight:600}
+.swipeWrap{position:relative;border-radius:26px;overflow:hidden;margin-bottom:0}
+.swipeAction{position:absolute;top:0;right:0;bottom:0;width:88px;background:#C2410C;color:#fff;font-weight:800;font-size:15px;display:grid;place-items:center;z-index:0;letter-spacing:.02em}
+.swipeWrap .task,.swipeWrap .rw{margin-bottom:0!important;transition:transform .22s cubic-bezier(.22,1,.36,1);will-change:transform;position:relative;z-index:1}
+.swipeWrap.rwWrap{border-radius:22px;margin-bottom:10px}
+.pigeonCard{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:26px;box-shadow:var(--sh);padding:14px 20px;margin-bottom:16px}
+.pigeonBig{flex:0 0 auto;display:grid;place-items:center;min-width:60px}
+.pigeonCap{flex:1}
+.pigeonCap b{display:block;font-size:13px;font-weight:700;letter-spacing:-.02em}
+.pigeonCap em{display:block;font-style:normal;font-size:13px;color:var(--sub);font-weight:500;margin-top:3px;line-height:1.45}
+.fab{position:relative}
+.fabPeek{position:absolute;top:-6px;right:-6px;width:24px;height:24px;transform:rotate(18deg);animation:peekBob 3s ease-in-out infinite;pointer-events:none}
+@keyframes peekBob{0%,100%{transform:rotate(18deg) translateY(0)}50%{transform:rotate(18deg) translateY(-2px)}}
+.fabPlus{line-height:1}
+.breakOverlay{position:fixed;inset:0;background:rgba(14,16,19,.92);z-index:99;display:grid;place-items:center;opacity:0;transition:opacity .4s}
+.breakOverlay.on{opacity:1}
+.breakBox{text-align:center;color:#fff;position:relative;padding:40px}
+.breakPigeon{display:inline-block;animation:flyOff 2.4s ease-out forwards}
+@keyframes flyOff{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(140px,-100px) rotate(-15deg);opacity:.2}}
+.breakFeather{position:absolute;font-size:22px;opacity:0;animation:featherFall 2.4s ease-out forwards}
+.breakFeather.f1{left:calc(50% - 60px);top:20%;animation-delay:.3s}
+.breakFeather.f2{left:calc(50% + 30px);top:16%;animation-delay:.7s}
+.breakFeather.f3{left:50%;top:32%;animation-delay:1.1s}
+@keyframes featherFall{0%{opacity:0;transform:translateY(-20px) rotate(0)}30%{opacity:1}100%{opacity:0;transform:translateY(140px) rotate(300deg)}}
+.breakTxt{margin-top:24px}
+.breakTxt .lbl{font-size:12px;color:#7F8085;font-weight:800;letter-spacing:.1em}
+.breakTxt .num{font-size:60px;font-weight:800;letter-spacing:-.05em;color:var(--lime);line-height:1;margin-top:8px}
+.breakTxt .num span{font-size:20px;color:#B7BAC0;font-weight:600;letter-spacing:0}
+.breakTxt .quip{font-size:15px;color:#B7BAC0;margin-top:16px;font-weight:600}
+.easterPigeon{position:fixed;bottom:180px;right:-60px;z-index:57;cursor:pointer;transition:opacity .5s,transform .5s;animation:walkAcross 12s linear forwards}
+@keyframes walkAcross{0%{right:-60px}100%{right:calc(100% + 20px)}}
+.easterPigeon .pgLeg{animation:legBob .4s ease-in-out infinite;transform-origin:top}
+.easterPigeon .pgLeg2{animation-delay:.2s}
+@keyframes legBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
+.pigeonMedal{display:grid;place-items:center;padding:8px}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:14px}
+.loadPigeon{animation:loadBob .5s ease-in-out infinite}
+@keyframes loadBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.loadTxt{font-size:13px;color:var(--sub);font-weight:600}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="app"><div id="view"></div></div>
-<button class="fab" id="fab" aria-label="add">+</button>
+<button class="settingsIcon" id="settingsBtn" aria-label="settings">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>
+</button>
+<button class="fab" id="fab" aria-label="add"><span class="fabPlus">+</span><span class="fabPeek"><svg viewBox="0 0 24 24" width="24" height="24" style="filter:drop-shadow(0 1px 3px rgba(0,0,0,.25))"><circle cx="12" cy="13" r="8" fill="#9A9791"/><path d="M17 13 L23 14 L17 15 Z" fill="#F5A623"/><circle cx="14" cy="11" r="1.4" fill="#0E1013"/><circle cx="14.4" cy="10.6" r="0.5" fill="#fff"/></svg></span></button>
 <nav class="nav" id="nav"></nav>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
@@ -214,7 +269,13 @@ const T={
  sDone:['今日完成','Done today'], sStreak:['连签天数','Day streak'], sPoints:['积分','Points'],
  tagEmpty:['空的','Empty'], tagClear:['全清','All clear'], tagLeft:['还剩 {0} 项','{0} left'],
  emptyRoast:['今天一条任务都没有。是真休息，还是不敢写。','Nothing on today. Real rest, or afraid to write it down?'],
- tasks:['任务','Tasks'], tapToCheck:['点一下打卡','Tap to check in'],
+ tasks:['任务','Tasks'], tapToCheck:['点打卡 · 长按编辑 · 左滑删除','Tap check · long-press edit · swipe left to delete'],
+ settingsT:['设置','Settings'],
+ sectGeneral:['基本','General'],
+ sectData:['数据','Data'],
+ backBtn:['返回','Back'],
+ othersTitle:['眼不见为净','Out of sight'],
+ othersHint:['今天不需要做的任务','Not scheduled today'],
  emptyList:['今天列表是空的。<br>点右下角的 + 加一个，说话也行。','Nothing here today.<br>Hit + below. You can just talk to it.'],
  anytime:['随时','anytime'],
  /* 打卡面板 */
@@ -255,6 +316,7 @@ const T={
  boxDesc:['60 分开一次，奖励随机。间歇性奖励比固定奖励更能维持行为。','60 points a pull, random payout. Intermittent rewards hold behavior better than fixed ones.'],
  boxOpen:['开箱','Open'], boxAgain:['再来一次（60 分）','Again (60 pts)'], boxStop:['见好就收','Walk away'],
  myRewards:['兑换你自己的奖励','Your own rewards'], redeem:['兑换','Redeem'],
+ rwLongHint:['长按编辑 · 左滑删除','Long-press to edit · swipe left to delete'],
  addReward:['＋ 添加一个奖励','＋ Add a reward'],
  rwWant:['你想要什么','What do you want'],
  rwWhat:['奖励内容','The reward'], rwWhatPh:['例：看一场电影','e.g. one movie night'],
@@ -299,9 +361,9 @@ const T={
  tGentleOff:['刀子拿回来了。','Knife\'s back.'],
  tBadge:['解锁徽章 {0}','Badge unlocked: {0}'],
  tWeekly:['上周的账算好了，去战报看看。','Last week\'s tab is in. Check the report.'],
- tShrink:['正在压缩图片…','Compressing…'],
+ tShrink:['鸽子在压缩图片……','Pigeon is compressing...'],
  tStreakG:['连签停在了 {0} 天。重新开始就好。','Streak stopped at {0} days. Just start again.'],
- lvNames:[['菜鸟','入门','上道','狠人','宗师'],['Rookie','Starter','Regular','Machine','Untouchable']],
+ lvNames:[['广场鸽','见习信鸽','老信鸽','铁翅膀','归巢大师'],['Plaza pigeon','Trainee','Veteran','Iron wings','Homing master']],
  wd:[['周日','周一','周二','周三','周四','周五','周六'],['Sun','Mon','Tue','Wed','Thu','Fri','Sat']],
  wdShort:[['一','二','三','四','五','六','日'],['M','T','W','T','F','S','S']],
  mon:[['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
@@ -714,7 +776,7 @@ function iconFor(s){
   for(const[r,e]of m)if(r.test(s))return e;return '🎯';
 }
 function parseTask(raw){
-  let s=' '+raw.trim()+' ',days=[0,1,2,3,4,5,6],time=null,target=0,unit='',cut=[];
+  let s=' '+raw.trim()+' ',days=null,time=null,target=0,unit='',cut=[];
   const rx=x=>new RegExp(x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
   if(/工作日|上班日|周一到周五|weekday|mon-fri/i.test(s)){days=[1,2,3,4,5];cut.push(/工作日|上班日|周一到周五|weekdays?|mon-fri/gi);}
   else if(/周末|双休|weekend/i.test(s)){days=[0,6];cut.push(/周末|双休|weekends?/gi);}
@@ -756,7 +818,7 @@ function recomputeStreak(){
   for(let i=0;i<500;i++){const r=dayRate(k);if(r===null){k=dayAdd(k,-1);continue;}if(r===1)cur++;else break;k=dayAdd(k,-1);}
   S.streak.cur=cur;S.streak.best=Math.max(S.streak.best,cur);
   if(prev>=3&&cur===0&&S.streak.noticed!==todayKey()){S.streak.noticed=todayKey();
-    setTimeout(()=>toast(S.set.gentle?t('tStreakG',prev):pk('brk').split('{n}').join(prev)),1500);}
+    setTimeout(()=>{if(!S.set.gentle) playBreakAnimation(prev); toast(S.set.gentle?t('tStreakG',prev):pk('brk').split('{n}').join(prev));},1500);}
 }
 function checkBadges(){
   const got=[];BADGES.forEach(b=>{if(!S.badges.includes(b.id)&&b.c(S)){S.badges.push(b.id);got.push(b.e+' '+b.n[LI()]);}});
@@ -804,6 +866,7 @@ function taskJab(x){
 }
 function viewToday(){
   const k=todayKey(),d=new Date(),due=dueTasks(k),done=due.filter(x=>isDone(k,x)).length,r=roastNow();
+  const pst=pigeonState(S.streak.cur);
   const wd=T.wd[LI()][d.getDay()];
   const moTxt=LI()?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]:(d.getMonth()+1);
   let h=`<div class="hero"><div class="ghost">${d.getDate()}</div><h1>${t('heroToday')}</h1>
@@ -813,24 +876,64 @@ function viewToday(){
     <div class="stat"><div class="n">${S.streak.cur}</div><div class="l">${t('sStreak')}</div></div>
     <div class="stat"><div class="n">${S.points}</div><div class="l">${t('sPoints')}</div></div>
   </div>
+  <div class="pigeonCard">
+    <div class="pigeonBig">${PIGEON.mascot(pst.mood, pst.scale)}</div>
+    <div class="pigeonCap"><b>${LI()?'Your pigeon':'你的鸽子'}</b><em>${LI()?pst.capEn:pst.capZh}</em></div>
+  </div>
   <div class="roast ${r.calm?'calm':''}"><span class="tag">${esc(r.tag)}</span><p>${esc(r.txt)}</p>
     <div class="brain"><b>${esc(r.b[0])}</b> · ${esc(r.b[1])}</div></div>
   <div class="shead"><h2>${t('tasks')}</h2><span>${t('tapToCheck')}</span></div><div class="list" id="list"></div>`;
   D('view').innerHTML=h;
   const L=D('list');
-  if(!due.length){L.innerHTML=`<div class="empty">${t('emptyList')}</div>`;return;}
+  const otherTasks = S.tasks.filter(x=>!x.arch && !due.includes(x));
+  const renderOthers=()=>{
+    if(!otherTasks.length) return '';
+    const daysLabel = ds => {
+      if(ds.length===7) return LI()?'Every day':'每天';
+      if(ds.length===5 && [1,2,3,4,5].every(i=>ds.includes(i))) return LI()?'Weekdays':'工作日';
+      if(ds.length===2 && ds.includes(0) && ds.includes(6)) return LI()?'Weekends':'周末';
+      const labels=LI()?['Sun','Mon','Tue','Wed','Thu','Fri','Sat']:['周日','周一','周二','周三','周四','周五','周六'];
+      return ds.sort((a,b)=>a-b).map(d=>labels[d]).join(LI()?', ':' / ');
+    };
+    const open = !!S.set.othersOpen;
+    return `<div class="otherFold ${open?'open':''}" id="othFold">
+        <h2><span class="chev">▶</span> ${t('othersTitle')} <span class="cnt">${otherTasks.length}</span></h2>
+        <span class="hint">${t('othersHint')}</span>
+      </div>
+      <div class="list" id="othList" style="display:${open?'flex':'none'}">${otherTasks.map(x=>`<div class="swipeWrap">
+        <div class="swipeAction">${LI()?'Delete':'删除'}</div>
+        <div class="task other" data-id="${x.id}">
+          <div class="ico">${x.icon}</div>
+          <div class="mid"><div class="tt">${esc(x.title)}</div><div class="ts">${esc(daysLabel(x.days))}${x.time?' · '+x.time:''}</div></div>
+        </div>
+      </div>`).join('')}</div>`;
+  };
+  if(!due.length){
+    L.innerHTML=`<div class="empty">${t('emptyList')}</div>`;
+    L.insertAdjacentHTML('afterend', renderOthers());
+    bindOthers();
+    return;
+  }
   due.sort((a,b)=>(isDone(k,a)-isDone(k,b))||((t2m(a.time)==null?1e4:t2m(a.time))-(t2m(b.time)==null?1e4:t2m(b.time))));
   due.forEach(x=>{
-    const l=log(k,x.id),dn=isDone(k,x),jab=dn?'':taskJab(x);
+    const l=log(k,x.id),dn=isDone(k,x),jab=dn?'':taskJab(x),cold=dn?'':coldShoulder(x);
     const sub=[x.time||t('anytime'),x.type==='count'?`${(l&&l.count)||0}/${x.target} ${x.unit||''}`:'',l&&l.note?'📝':''].filter(Boolean).join(' · ');
-    const n=el(`<div class="task ${dn?'done':''} ${jab?'late':''}">
+    const jabTxt = cold || jab;
+    const wrap=el(`<div class="swipeWrap">
+      <div class="swipeAction">${LI()?'Delete':'删除'}</div>
+      <div class="task ${dn?'done':''} ${jabTxt?'late':''}">
       <div class="ico">${x.icon}</div>
       <div class="mid"><div class="tt">${esc(x.title)}</div><div class="ts">${esc(sub)}</div>
       ${x.type==='count'?`<div class="prog"><i style="width:${Math.min(100,((l&&l.count)||0)/x.target*100)}%"></i></div>`:''}
-      ${jab?`<div class="jab">${esc(jab)}</div>`:''}</div>
-      <div class="check"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#12140F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>`);
-    n.onclick=()=>openCheckin(x);L.appendChild(n);
+      ${jabTxt?`<div class="jab">${esc(jabTxt)}</div>`:''}</div>
+      <div class="check"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#12140F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+    </div>`);
+    const n = wrap.querySelector('.task');
+    attachLongPress(n, ()=>openTaskMenu(x), ()=>openCheckin(x));attachSwipe(wrap, ()=>{x.arch=true;save();render();toast(t('tDel'));});L.appendChild(wrap);
   });
+  L.insertAdjacentHTML('afterend', renderOthers());
+  bindOthers();
+  maybeEasterPigeon();
   const rb=document.querySelector('.roast');
   if(rb) rb.onclick=refreshRoast;
   startRoastTicker();
@@ -920,8 +1023,14 @@ function openAdd(edit){
   <div class="row"><div class="field"><label>${t('fTime')}</label><input id="tm" type="time" value="${e.time||''}"></div>
   <div class="field"><label>${t('fGoal')}</label><input id="tg" inputmode="numeric" placeholder="${t('fGoalPh')}" value="${e.target||''}"></div></div>
   <div class="field"><label>${t('fUnit')}</label><input id="un" placeholder="${t('fUnitPh')}" value="${esc(e.unit||'')}"></div>
-  <div class="field"><label>${t('fRepeat')}</label><div class="chips" id="dw" style="margin:6px 0 0">
-    ${T.wd[LI()].map((w,i)=>`<button class="chip ${(e.days||[0,1,2,3,4,5,6]).includes(i)?'on':''}" data-d="${i}">${LI()?w:w[1]}</button>`).join('')}
+  <div class="field"><label>${t('fRepeat')} <span style="font-weight:500;color:var(--sub);font-size:11px">· ${LI()?'nothing selected = every day':'不选 = 每天'}</span></label>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="chip" id="allD" style="flex:1">${LI()?'Every day':'每天'}</button>
+      <button class="chip" id="wkD" style="flex:1">${LI()?'Weekdays':'工作日'}</button>
+      <button class="chip" id="wnD" style="flex:1">${LI()?'Weekend':'周末'}</button>
+    </div>
+    <div class="chips" id="dw" style="margin:6px 0 0">
+    ${T.wd[LI()].map((w,i)=>`<button class="chip ${(e.days||[]).includes(i)?'on':''}" data-d="${i}">${LI()?w:w[1]}</button>`).join('')}
   </div></div>
   <button class="btn lime" id="sv">${edit?t('fSave'):t('fAdd')}</button>
   ${edit?`<button class="btn ghost" id="del">${t('fDel')}</button>`:''}`);
@@ -929,14 +1038,25 @@ function openAdd(edit){
   const setV=o=>{H.querySelector('#ti').value=o.title;H.querySelector('#tm').value=o.time||'';
     H.querySelector('#tg').value=o.target||'';H.querySelector('#un').value=o.unit||'';
     H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',(o.days||[0,1,2,3,4,5,6]).includes(+c.dataset.d)));};
-  H.querySelectorAll('#dw .chip').forEach(c=>c.onclick=()=>c.classList.toggle('on'));
+  const updateShortcuts=()=>{
+    const on=[...H.querySelectorAll('#dw .chip.on')].map(c=>+c.dataset.d).sort();
+    H.querySelector('#allD').classList.toggle('on', on.length===7);
+    H.querySelector('#wkD').classList.toggle('on', on.length===5 && [1,2,3,4,5].every(i=>on.includes(i)));
+    H.querySelector('#wnD').classList.toggle('on', on.length===2 && on.includes(0) && on.includes(6));
+  };
+  H.querySelectorAll('#dw .chip').forEach(c=>c.onclick=()=>{c.classList.toggle('on');updateShortcuts();});
+  const setDays=arr=>{H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',arr.includes(+c.dataset.d)));updateShortcuts();};
+  H.querySelector('#allD').onclick=()=>setDays([0,1,2,3,4,5,6]);
+  H.querySelector('#wkD').onclick=()=>setDays([1,2,3,4,5]);
+  H.querySelector('#wnD').onclick=()=>setDays([0,6]);
+  updateShortcuts();
   H.querySelectorAll('.chip[data-p]').forEach(c=>c.onclick=()=>{const p=PRESET[+c.dataset.p];
     setV({title:p.n[LI()],time:p.time,target:p.target,unit:p.unit[LI()],days:[0,1,2,3,4,5,6]});});
   const ti=H.querySelector('#ti');
   ti.addEventListener('blur',()=>{if(edit||ti.value.trim().length<5)return;const p=parseTask(ti.value);
     if(!H.querySelector('#tm').value&&p.time)H.querySelector('#tm').value=p.time;
     if(!H.querySelector('#tg').value&&p.target){H.querySelector('#tg').value=p.target;H.querySelector('#un').value=p.unit||'';}
-    H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',p.days.includes(+c.dataset.d)));
+    if(p.days) H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',p.days.includes(+c.dataset.d)));
     ti.value=p.title;});
   const mic=H.querySelector('#mic');
   if(mic){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -955,7 +1075,8 @@ function openAdd(edit){
       type:tg>0?'count':'bool',days:days.length?days:[0,1,2,3,4,5,6],icon:iconFor(title)};
     if(edit){Object.assign(edit,o);toast(t('tSaved'));}
     else{S.tasks.push(Object.assign({id:'t'+Date.now().toString(36),start:todayKey(),arch:false},o));
-      toast(S.set.gentle?t('tAddedG'):t('tAdded'));}
+      const nextMsg=nextOccurrenceMsg(o.days);
+      toast(nextMsg || (S.set.gentle?t('tAddedG'):t('tAdded')));}
     save();closeSheet();render();};
   H.querySelector('#del')&&(H.querySelector('#del').onclick=()=>{edit.arch=true;save();closeSheet();render();toast(t('tDel'));});
 }
@@ -968,14 +1089,14 @@ function botScores(){
 }
 async function viewBoard(){
   D('view').innerHTML=`<div class="hero"><div class="ghost">${S.points}</div><h1>${t('heroBoard')}</h1>
-    <div class="meta">${t('boardSub')}</div></div><div id="lb"><div class="empty">…</div></div>`;
+    <div class="meta">${t('boardSub')}</div></div><div id="lb"><div class="loading"><div class="loadPigeon">${PIGEON.walkSide}</div><div class="loadTxt">${LI()?'On the way...':'在路上……'}</div></div></div>`;
   let rows=botScores();
-  rows.push({name:S.set.name||(LI()?'You':'我'),av:'🫵',pts:S.points,me:true,streak:S.streak.cur});
+  rows.push({name:S.set.name||(LI()?'You':'我'),av:S.set.avatar||'🫵',pts:S.points,me:true,streak:S.streak.cur});
   if(S.set.public){try{
     const r=await window.storage.list('dglb:',true);
     for(const k of (r&&r.keys||[]).filter(x=>x!=='dglb:'+S.uid).slice(0,18)){
       const g=await sGet(k,true);if(!g)continue;const o=JSON.parse(g);
-      if(o&&o.name)rows.push({name:o.name,av:'🙂',pts:o.pts|0,streak:o.streak|0,real:true});}
+      if(o&&o.name)rows.push({name:o.name,av:o.avatar||'🙂',pts:o.pts|0,streak:o.streak|0,real:true});}
   }catch(e){}}
   rows.sort((a,b)=>b.pts-a.pts);
   const my=rows.findIndex(r=>r.me)+1,top=rows.slice(0,3),rest=rows.slice(3);
@@ -990,22 +1111,351 @@ async function viewBoard(){
     <div class="brain"><b>${esc(b[0])}</b> · ${esc(b[1])}</div></div>
   <div class="shead"><h2>${t('fullList')}</h2><span>${t('people',rows.length)}</span></div>
   ${rest.map((r,i)=>`<div class="rank ${r.me?'me':''}"><div class="i">${i+4}</div><div class="av">${r.av}</div>
-    <div class="nm">${esc(r.name)}<em>${t('streakN',r.streak)} · ${r.me?'':(r.real?'<span class="dot"></span>'+t('realTag'):t('botTag'))}</em></div>
+    <div class="nm">${esc(r.name)}<em>${t('streakN',r.streak)}</em></div>
     <div class="pt">${r.pts}</div></div>`).join('')}
-  <p class="hint" style="margin-top:14px">${t('botNote')}</p>
   <div class="shead"><h2>${t('goPublic')}</h2></div>
   <div class="sw"><div><b>${t('pubTitle')}</b><em>${t('pubDesc')}</em></div><div class="tog ${S.set.public?'on':''}" id="pub"><i></i></div></div>
-  <div class="field"><label>${t('nickname')}</label><input id="nm" value="${esc(S.set.name||'')}" placeholder="${LI()?'You':'我'}"></div>`;
+  <div class="field"><label>${t('nickname')}</label><input id="nm" value="${esc(S.set.name||'')}" placeholder="${LI()?'You':'我'}"></div>
+    <div class="sw"><div><b>${LI()?'Your avatar':'你的头像'}</b><em>${LI()?'Shown on the public board.':'显示在公共榜单上。'}</em></div><button style="width:50px;height:50px;border-radius:16px;background:var(--card);box-shadow:var(--sh);font-size:26px" id="avBtn">${S.set.avatar||'🫵'}</button></div>`;
   D('lb').innerHTML=h;
+  D('avBtn')&&(D('avBtn').onclick=openAvatarPicker);
   D('pub').onclick=async()=>{S.set.public=!S.set.public;
     if(S.set.public){S.set.name=D('nm').value.trim()||(LI()?'Anonymous':'匿名选手');
-      await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,ts:Date.now()}),true);toast(t('onBoard'));}
+      await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵',ts:Date.now()}),true);toast(t('onBoard'));}
     else{try{await window.storage.delete('dglb:'+S.uid,true)}catch(e){}toast(t('offBoard'));}
     save();render();};
   D('nm').onchange=ev=>{S.set.name=ev.target.value.trim();save();};
 }
 
 /* ===================== 奖励 ===================== */
+function lastDoneKey(id){
+  const keys=Object.keys(S.logs||{}).sort().reverse();
+  for(const k of keys){const l=(S.logs[k]||{})[id];if(l && (l.done || (l.count||0)>0)) return k;}
+  return null;
+}
+function daysBetween(a,b){return Math.round((dateOf(b).getTime()-dateOf(a).getTime())/864e5);}
+function coldShoulder(x){
+  if(S.set.gentle) return '';
+  const last=lastDoneKey(x.id);
+  const start=x.start||todayKey();
+  const from=last||start;
+  const gap=daysBetween(from, todayKey());
+  if(gap < 3) return '';
+  const zh=[[3,`${gap} 天没碰它了。`],[5,`${gap} 天没做，装看不见？`],[7,'一周了。这条已经进入昏迷状态。'],[10,`${gap} 天了。你确定还打算做这件事？`],[14,'两周没动。删了它对彼此都好。'],[21,`${gap} 天。你已经算是抛弃它了。`],[30,'一个月。它已经不认识你了。'],[45,`${gap} 天。这条任务在等你的道歉。`],[60,'两个月。你当初怎么想的，还记得吗？'],[90,'三个月。它已经死了，你还留着它当纪念？']];
+  const en=[[3,`Untouched for ${gap} days.`],[5,`${gap} days ignored. Pretending it's not there?`],[7,"A week. This one's in a coma."],[10,`${gap} days. Sure you still plan to do this?`],[14,'Two weeks untouched. Delete it. Kinder for both of you.'],[21,`${gap} days. You've effectively abandoned it.`],[30,"A month. It doesn't recognize you anymore."],[45,`${gap} days. This task is waiting for an apology.`],[60,'Two months. Remember why you added it?'],[90,"Three months. It's dead. You're keeping a corpse."]];
+  const arr = LI()?en:zh;
+  let hit=arr[0][1];
+  for(const [d,tt] of arr) if(gap>=d) hit=tt;
+  return hit;
+}
+function attachLongPress(el, longCb, tapCb, ignoreFn){
+  let timer=null, longFired=false, startPt=null;
+  const THRESHOLD=450, MOVE_TOL=10;
+  const start = e => {
+    if(ignoreFn && ignoreFn(e)) return;
+    longFired=false;
+    const t = e.touches ? e.touches[0] : e;
+    startPt = {x: t.clientX, y: t.clientY};
+    timer = setTimeout(()=>{
+      longFired = true;
+      timer = null;
+      if(navigator.vibrate) try{navigator.vibrate(30);}catch(_){}
+      longCb();
+    }, THRESHOLD);
+  };
+  const move = e => {
+    if(!timer || !startPt) return;
+    const t = e.touches ? e.touches[0] : e;
+    if(Math.abs(t.clientX-startPt.x)>MOVE_TOL || Math.abs(t.clientY-startPt.y)>MOVE_TOL){
+      clearTimeout(timer); timer = null;
+    }
+  };
+  const end = () => {
+    if(timer){ clearTimeout(timer); timer=null; }
+  };
+  el.addEventListener('touchstart', start, {passive:true});
+  el.addEventListener('touchmove', move, {passive:true});
+  el.addEventListener('touchend', end);
+  el.addEventListener('touchcancel', end);
+  el.addEventListener('mousedown', start);
+  el.addEventListener('mousemove', move);
+  el.addEventListener('mouseup', end);
+  el.addEventListener('mouseleave', end);
+  el.addEventListener('click', ev=>{
+    if(longFired){ ev.preventDefault(); ev.stopPropagation(); longFired=false; return; }
+    if(ignoreFn && ignoreFn(ev)) return;
+    if(tapCb) tapCb(ev);
+  });
+}
+function attachSwipe(wrap, onDelete){
+  const card = wrap.querySelector('.task, .rw');
+  if(!card) return;
+  let startX=null, startY=null, currentX=0, revealed=false, swiping=false, timer=null;
+  const REVEAL=88, THRESHOLD=40;
+  const start = e => {
+    const t = e.touches ? e.touches[0] : e;
+    startX = t.clientX; startY = t.clientY;
+    swiping = false;
+    card.style.transition='none';
+  };
+  const move = e => {
+    if(startX==null) return;
+    const t = e.touches ? e.touches[0] : e;
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    if(!swiping){
+      if(Math.abs(dy) > 12){ startX=null; return; }
+      if(Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) swiping=true;
+    }
+    if(swiping){
+      // 支持向左滑；已展开时允许向右收回
+      const base = revealed ? -REVEAL : 0;
+      const target = Math.max(-REVEAL-20, Math.min(0, base + dx));
+      card.style.transform=`translateX(${target}px)`;
+      if(e.cancelable) e.preventDefault && e.preventDefault();
+    }
+  };
+  const end = e => {
+    if(startX==null) return;
+    startX=null;
+    if(!swiping) return;
+    swiping=false;
+    card.style.transition='transform .22s cubic-bezier(.22,1,.36,1)';
+    const now = parseFloat((card.style.transform.match(/-?\d+(\.\d+)?/)||[0])[0]) || 0;
+    if(now < -THRESHOLD){
+      card.style.transform=`translateX(-${REVEAL}px)`;
+      revealed=true;
+    }else{
+      card.style.transform='translateX(0)';
+      revealed=false;
+    }
+  };
+  card.addEventListener('touchstart', start, {passive:true});
+  card.addEventListener('touchmove', move, {passive:false});
+  card.addEventListener('touchend', end);
+  card.addEventListener('touchcancel', end);
+  card.addEventListener('mousedown', start);
+  card.addEventListener('mousemove', move);
+  card.addEventListener('mouseup', end);
+  card.addEventListener('mouseleave', ()=>{ if(startX!==null) end(); });
+  // 点击外面收回
+  document.addEventListener('click', ev=>{
+    if(revealed && !wrap.contains(ev.target)){
+      card.style.transition='transform .22s cubic-bezier(.22,1,.36,1)';
+      card.style.transform='translateX(0)';
+      revealed=false;
+    }
+  });
+  wrap.querySelector('.swipeAction').onclick=ev=>{
+    ev.stopPropagation();
+    onDelete();
+  };
+}
+
+const PIGEON = {
+  mascot: (mood='ok', scale=1)=>{
+    const eyeY = mood==='sad'?19:18;
+    const bodyC = mood==='sad'?'#B8B8B0':'#A8A5A0';
+    const crown = mood==='crown'?'<path d="M18 6 L22 10 L26 4 L30 10 L34 4 L38 10 L42 6 L40 14 L20 14 Z" fill="#D6FF3F" stroke="#12140F" stroke-width="1"/>':'';
+    const smile = (mood==='proud'||mood==='crown')?'<path d="M27 24 Q30 26 33 24" stroke="#0E1013" stroke-width="1" fill="none" stroke-linecap="round"/>':'';
+    const puff = (mood==='proud'||mood==='crown')?'M12 38 Q30 22 48 38 Q45 52 30 52 Q15 52 12 38':'M15 40 Q30 26 45 40 Q42 50 30 50 Q18 50 15 40';
+    return `<svg viewBox="0 0 60 60" width="${60*scale}" height="${60*scale}" style="transition:all .3s">
+      <path d="${puff}" fill="${bodyC}"/>
+      <circle cx="30" cy="20" r="12" fill="#9A9791"/>
+      ${crown}
+      <path d="M30 22 L37 24 L30 26 Z" fill="#F5A623"/>
+      <circle cx="26" cy="${eyeY}" r="1.6" fill="#0E1013"/><circle cx="26.4" cy="${eyeY-0.4}" r="0.5" fill="#fff"/>
+      <circle cx="34" cy="${eyeY}" r="1.6" fill="#0E1013"/><circle cx="34.4" cy="${eyeY-0.4}" r="0.5" fill="#fff"/>
+      ${smile}
+      <path d="M15 32 Q20 42 32 40" stroke="#7F7B75" stroke-width="1.4" fill="none"/>
+      <path d="M22 52 Q20 55 18 56 M28 52 Q30 55 32 56" stroke="#F5A623" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+    </svg>`;
+  },
+  walkSide: `<svg viewBox="0 0 50 40" width="46" height="36">
+    <ellipse cx="24" cy="22" rx="13" ry="7.5" fill="#A8A5A0"/>
+    <circle cx="35" cy="15" r="6.5" fill="#9A9791"/>
+    <path d="M39 15 L45 16.5 L39 17.5 Z" fill="#F5A623"/>
+    <circle cx="36" cy="13" r="1.1" fill="#0E1013"/><circle cx="36.3" cy="12.7" r="0.35" fill="#fff"/>
+    <path d="M17 18 Q22 28 30 26" stroke="#7F7B75" stroke-width="1.4" fill="none"/>
+    <line x1="20" y1="28" x2="18" y2="36" stroke="#F5A623" stroke-width="1.6" stroke-linecap="round" class="pgLeg pgLeg1"/>
+    <line x1="26" y1="28" x2="28" y2="36" stroke="#F5A623" stroke-width="1.6" stroke-linecap="round" class="pgLeg pgLeg2"/>
+  </svg>`,
+  fly: `<svg viewBox="0 0 60 40" width="60" height="40">
+    <ellipse cx="30" cy="22" rx="11" ry="4" fill="#A8A5A0"/>
+    <circle cx="39" cy="20" r="4.5" fill="#9A9791"/>
+    <path d="M41 20 L47 21 L41 22 Z" fill="#F5A623"/>
+    <circle cx="40" cy="19" r="0.9" fill="#0E1013"/>
+    <path d="M20 22 Q10 5 6 14 Q13 20 20 22 Z" fill="#7F7B75"/>
+    <path d="M20 22 Q10 38 6 30 Q13 25 20 22 Z" fill="#8A8783" opacity="0.7"/>
+  </svg>`
+};
+function pigeonState(streak){
+  if(streak >= 66) return {mood:'crown', scale:1.3, capZh:'白毛长老。别把自己写进传说就好。', capEn:'Legendary. Just don\'t write yourself into history.'};
+  if(streak >= 21) return {mood:'proud', scale:1.15, capZh:'昂首挺胸，有点样子了。', capEn:'Chest out. Getting somewhere.'};
+  if(streak >= 7) return {mood:'happy', scale:1.05, capZh:'翅膀硬了一点。', capEn:'Wings warming up.'};
+  if(streak >= 3) return {mood:'ok', scale:0.95, capZh:'刚学会走。', capEn:'Just started walking.'};
+  return {mood:'sad', scale:0.85, capZh:'还是只广场鸽，就地打卡就地咕。', capEn:'Just a plaza pigeon. Coo in place.'};
+}
+function playBreakAnimation(days){
+  const overlay = document.createElement('div');
+  overlay.className = 'breakOverlay';
+  overlay.innerHTML = `<div class="breakBox">
+    <div class="breakPigeon">${PIGEON.fly}</div>
+    <div class="breakFeather f1">🪶</div>
+    <div class="breakFeather f2">🪶</div>
+    <div class="breakFeather f3">🪶</div>
+    <div class="breakTxt">
+      <div class="lbl">${LI()?'STREAK BROKEN':'连签断了'}</div>
+      <div class="num">${days}<span>${LI()?' days':' 天'}</span></div>
+      <div class="quip">${LI()?'Flaked. Living up to the name.':'又鸽了。名副其实。'}</div>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=>overlay.classList.add('on'));
+  overlay.onclick = ()=>{overlay.classList.remove('on');setTimeout(()=>overlay.remove(),400);};
+  setTimeout(()=>{if(overlay.parentNode){overlay.classList.remove('on');setTimeout(()=>overlay.remove(),400);}},3400);
+}
+const EASTER_ZH = [
+  '咕。你今天做完了没？我懒得看。','路过。啄你一下。','你怎么还在这里？','我从广场飞来，路过你家。',
+  '给我一片面包我就走。','别看我，我不是替身。','这个 app 是我开的，你懂的。','我先飞了，你继续躺。',
+  '我不评价，我只是看着。','你桌上的碎屑我都统计过了。','慢慢来，反正你也快不起来。','啄啄。别装死。',
+  '我 24 小时在广场蹲你。','你看你，输给一只鸽子。','别哭。哭不出眼泪的。','咕咕咕。翻译：加油你个懒鬼。'
+];
+const EASTER_EN = [
+  "Coo. Finished today? Don't tell me, I don't care.","Just passing. Peck.","Why are you still here?","Flew over from the plaza. Nice window.",
+  "Give me a crumb and I leave.","Don't look at me. Not your substitute.","I run this app. You know that.","Flying off. You go on lying there.",
+  "Not judging. Just watching.","I've counted every crumb on your desk.","Take your time. Not like you'd be fast.","Peck peck. Stop playing dead.",
+  "I squat outside 24 hours.","Look at you. Losing to a pigeon.","Don't cry. You can't anyway.","Coo. Translation: get up, you slob."
+];
+function maybeEasterPigeon(){
+  if(Math.random() >= 0.05) return;
+  const el = document.createElement('div');
+  el.className = 'easterPigeon';
+  el.innerHTML = PIGEON.walkSide;
+  document.body.appendChild(el);
+  el.onclick = ()=>{
+    toast(pick(LI()?EASTER_EN:EASTER_ZH));
+    el.style.animation = 'none';
+    el.style.transform = 'translateY(-40px) rotate(-8deg)';
+    el.style.opacity = '0';
+    setTimeout(()=>el.remove(), 500);
+  };
+  setTimeout(()=>{if(el.parentNode) el.remove();}, 14000);
+}
+function maybeKingPigeon(rate){
+  if(rate >= 0.3 || rate === 0) return;
+  setTimeout(()=>{
+    sheet(`<div class="pop"><div class="pigeonMedal">${PIGEON.mascot('crown',1.3)}</div>
+      <h4>${LI()?'Pigeon King of the Week':'本周 · 鸽者王'}</h4>
+      <p>${LI()?`${Math.round(rate*100)}% completion.`:`本周完成 ${Math.round(rate*100)}%。`}<br>${LI()?'Awarded to the most reliable flaker of the week.':'颁给本周最专业的失约者。'}<br>${LI()?"Don't mention it.":'不用客气。'}</p></div>
+      <button class="btn lime" id="mkClose">${LI()?'Accept my prize':'受之有愧'}</button>`);
+    D('sheet').querySelector('#mkClose').onclick=closeSheet;
+  }, 800);
+}
+
+function bindOthers(){
+  const fold=document.getElementById('othFold');
+  if(fold) fold.onclick=()=>{
+    S.set.othersOpen=!S.set.othersOpen; save();
+    const list=document.getElementById('othList');
+    fold.classList.toggle('open', S.set.othersOpen);
+    if(list) list.style.display = S.set.othersOpen?'flex':'none';
+    if(S.set.othersOpen) setTimeout(bindOthersItems, 10);
+  };
+  bindOthersItems();
+}
+function bindOthersItems(){
+  document.querySelectorAll('.task.other').forEach(row=>{
+    const id=row.dataset.id;
+    const x=S.tasks.find(t=>t.id===id); if(!x) return;
+    attachLongPress(row, ()=>openTaskMenu(x), ()=>openTaskMenu(x));
+    const wrap = row.closest('.swipeWrap');
+    if(wrap) attachSwipe(wrap, ()=>{x.arch=true;save();render();toast(t('tDel'));});
+  });
+}
+function nextOccurrenceMsg(daysArr){
+  if(!daysArr||!daysArr.length) return '';
+  const today=todayKey();
+  const nowDow=dow(today);
+  const zh=['周日','周一','周二','周三','周四','周五','周六'];
+  const en=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  if(daysArr.includes(nowDow)) return '';
+  // 找到下一次
+  for(let i=1;i<=7;i++){
+    const nd=(nowDow+i)%7;
+    if(daysArr.includes(nd)){
+      const label=(LI()?en:zh)[nd];
+      const inN = i===1 ? (LI()?'tomorrow':'明天') : (LI()?`in ${i} days`:`${i} 天后`);
+      return LI()?`Added. Next shows on ${label} (${inN}).`:`已加入。下次显示：${label}（${inN}）。`;
+    }
+  }
+  return '';
+}
+function openTaskMenu(x){
+  const Z=LI();
+  sheet(`<h3>${x.icon} ${esc(x.title)}</h3>
+    <button class="btn lime" id="mChk">${Z?'Check in':'打卡'}</button>
+    <button class="btn" id="mEdit">${Z?'Edit':'编辑任务'}</button>
+    <button class="btn ghost" id="mDel" style="color:#C2410C">${Z?'Delete this task':'删除这个任务'}</button>`);
+  D('sheet').querySelector('#mChk').onclick=()=>{closeSheet();setTimeout(()=>openCheckin(x),240);};
+  D('sheet').querySelector('#mEdit').onclick=()=>{closeSheet();setTimeout(()=>openAdd(x),240);};
+  D('sheet').querySelector('#mDel').onclick=()=>{
+    sheet(`<div class="pop"><div class="e">🗑</div><h4>${Z?'Delete this task?':'删除这条任务？'}</h4>
+      <p>${esc(x.title)}<br>${Z?'History is kept but the task disappears from today.':'历史记录保留，但这条不再出现在今日。'}</p></div>
+      <button class="btn" id="cDel" style="background:#C2410C;color:#fff">${Z?'Yes, delete':'确认删除'}</button>
+      <button class="btn ghost" id="cCancel">${Z?'Cancel':'取消'}</button>`);
+    D('sheet').querySelector('#cDel').onclick=()=>{x.arch=true;save();closeSheet();render();toast(t('tDel'));};
+    D('sheet').querySelector('#cCancel').onclick=closeSheet;
+  };
+}
+function openRewardMenu(idx){
+  const r=S.rewards[idx],Z=LI();
+  sheet(`<h3>${r.e} ${esc(r.t)}</h3>
+    <button class="btn lime" id="rRed" ${S.points<r.c?'style="opacity:.4;pointer-events:none"':''}>${Z?`Redeem (${r.c} pts)`:`兑换（${r.c} 分）`}</button>
+    <button class="btn" id="rEdit">${Z?'Edit reward':'编辑奖励'}</button>
+    <button class="btn ghost" id="rDel" style="color:#C2410C">${Z?'Delete reward':'删除奖励'}</button>`);
+  D('sheet').querySelector('#rRed').onclick=()=>{
+    if(S.points<r.c) return;
+    S.points-=r.c;r.got=(r.got||0)+1;save();closeSheet();render();
+    toast(S.set.gentle?t('tRedeemG'):t('tRedeem',r.t));
+  };
+  D('sheet').querySelector('#rEdit').onclick=()=>{closeSheet();setTimeout(()=>openRewardEdit(idx),240);};
+  D('sheet').querySelector('#rDel').onclick=()=>{
+    S.rewards.splice(idx,1);save();closeSheet();render();
+    toast(Z?'Deleted.':'删了。');
+  };
+}
+function openRewardEdit(idx){
+  const r=S.rewards[idx];
+  sheet(`<h3>${LI()?'Edit reward':'编辑奖励'}</h3>
+    <div class="field"><label>${t('rwWhat')}</label><input id="rt" value="${esc(r.t)}"></div>
+    <div class="row"><div class="field"><label>${t('rwEmoji')}</label><input id="re" value="${esc(r.e)}"></div>
+    <div class="field"><label>${t('rwCost')}</label><input id="rc" inputmode="numeric" value="${r.c}"></div></div>
+    <button class="btn lime" id="ok">${t('fSave')}</button>`);
+  D('sheet').querySelector('#ok').onclick=()=>{
+    const v=D('sheet').querySelector('#rt').value.trim();if(!v) return toast(t('tWant'));
+    r.t=v; r.e=D('sheet').querySelector('#re').value.trim()||'🎁';
+    r.c=Math.max(10,parseInt(D('sheet').querySelector('#rc').value)||r.c);
+    r._d=0;
+    save();closeSheet();render();toast(t('tSaved'));
+  };
+}
+const AVATARS=['🫵','😺','🐻','🦊','🐼','🐰','🐧','🦁','🐯','🐸','🐙','🐳','🌵','🌸','🍀','🍄','🍑','🍕','⚡','🔥','💫','✨','🌙','☀️','🎯','🎲','🎮','📚','✏️','🏃','🧘','💪','🎨','🎸','☕','🍵','🌈','💎','👑','🚀'];
+function openAvatarPicker(){
+  const cur=S.set.avatar||'🫵';
+  sheet(`<h3>${LI()?'Pick an avatar':'选个头像'}</h3>
+    <p class="hint" style="margin-top:-8px">${LI()?'Shown on the public leaderboard.':'显示在公共榜单上。'}</p>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px">
+      ${AVATARS.map(a=>`<button class="avpick" data-a="${a}" style="aspect-ratio:1;border-radius:16px;background:${a===cur?'var(--lime)':'var(--card)'};box-shadow:var(--sh);font-size:26px;display:grid;place-items:center">${a}</button>`).join('')}
+    </div>
+    <button class="btn ghost" id="cav">${LI()?'Cancel':'取消'}</button>`);
+  D('sheet').querySelector('#cav').onclick=closeSheet;
+  D('sheet').querySelectorAll('.avpick').forEach(b=>b.onclick=async()=>{
+    S.set.avatar=b.dataset.a; save();
+    if(S.set.public) await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar,ts:Date.now()}),true);
+    closeSheet();render();
+  });
+}
 function ensureDefaultTasks(){
   const now=LI()?'en':'zh';
   const zh=[
@@ -1104,29 +1554,28 @@ function viewReward(){
   <div class="bigpoint"><div class="n">${S.points}</div><div class="l">${t('ptsAvail',totalDone(S))}</div></div>
   <div class="rw"><div class="e">🎲</div><div class="m"><b>${t('boxTitle')}</b><em>${t('boxDesc')}</em></div>
     <button class="go ${S.points<60?'no':''}" id="box">${t('boxOpen')}</button></div>
-  <div class="shead"><h2>${t('myRewards')}</h2></div><div id="rws"></div>
+  <div class="shead"><h2>${t('myRewards')}</h2><span>${t('rwLongHint')}</span></div><div id="rws"></div>
   <button class="btn ghost" id="addrw">${t('addReward')}</button>
   <div class="shead"><h2>${t('badgesT')}</h2><span>${S.badges.length}/${BADGES.length}</span></div>
   <div class="badges">${BADGES.map(b=>`<div class="badge ${S.badges.includes(b.id)?'got':''}"><div class="e">${b.e}</div><div class="t">${b.n[LI()]}</div></div>`).join('')}</div>
-  <div class="shead"><h2>${t('settings')}</h2></div>
-  <div class="sw"><div><b>${t('gentleT')}</b><em>${t('gentleD')}</em></div><div class="tog ${S.set.gentle?'on':''}" id="gt"><i></i></div></div>
-  <div class="field"><label>${t('langT')}</label><div class="seg" style="margin:6px 0 0;box-shadow:none;padding:0;background:transparent">
-    <button class="${LI()?'':'on'}" data-l="zh">中文</button><button class="${LI()?'on':''}" data-l="en">English</button></div></div>`;
-  D('view').insertAdjacentHTML('beforeend', `
-  <div class="shead"><h2>${t('dataT')}</h2></div>
-  <div class="field"><label>${t('dataT')}</label>
-    <div style="font-size:13px;line-height:1.6;color:var(--sub);font-weight:500;margin-bottom:12px">${t('dataD')}</div>
-    <button class="btn lime" id="expBtn" style="margin-bottom:10px">${t('dataExport')}</button>
-    <button class="btn" id="impBtn">${t('dataImport')}</button>
-  </div>`);
-  D('expBtn').onclick=exportData;
-  D('impBtn').onclick=importData;
-  D('rws').innerHTML=S.rewards.map((r,i)=>`<div class="rw"><div class="e">${r.e}</div>
-    <div class="m"><b>${esc(r.t)}</b><em>${r.c} ${LI()?'pts':'分'}${r.got?' · '+t('rwGot',r.got):''}</em></div>
-    <button class="go ${S.points<r.c?'no':''}" data-i="${i}">${t('redeem')}</button></div>`).join('');
-  D('rws').querySelectorAll('.go').forEach(b=>b.onclick=()=>{const r=S.rewards[+b.dataset.i];
-    if(S.points<r.c)return toast(S.set.gentle?t('tPoorG'):t('tPoor'));
-    S.points-=r.c;r.got=(r.got||0)+1;save();render();toast(S.set.gentle?t('tRedeemG'):t('tRedeem',r.t));});
+`;
+  D('rws').innerHTML=S.rewards.map((r,i)=>`<div class="swipeWrap rwWrap">
+    <div class="swipeAction">${LI()?'Delete':'删除'}</div>
+    <div class="rw" data-i="${i}"><div class="e">${r.e}</div>
+      <div class="m"><b>${esc(r.t)}</b><em>${r.c} ${LI()?'pts':'分'}${r.got?' · '+t('rwGot',r.got):''}</em></div>
+      <button class="go ${S.points<r.c?'no':''}" data-i="${i}">${t('redeem')}</button>
+    </div>
+  </div>`).join('');
+  D('rws').querySelectorAll('.rw').forEach(row=>{
+    const i = +row.dataset.i;
+    const goBtn = row.querySelector('.go');
+    goBtn.onclick=ev=>{ev.stopPropagation();const r=S.rewards[i];
+      if(S.points<r.c)return toast(S.set.gentle?t('tPoorG'):t('tPoor'));
+      S.points-=r.c;r.got=(r.got||0)+1;save();render();toast(S.set.gentle?t('tRedeemG'):t('tRedeem',r.t));};
+    attachLongPress(row, ()=>openRewardMenu(i), null, e=>e.target.closest('.go'));
+    const wrap = row.closest('.swipeWrap');
+    if(wrap) attachSwipe(wrap, ()=>{S.rewards.splice(i,1);save();render();toast(LI()?'Deleted.':'删了。');});
+  });
   D('addrw').onclick=()=>{
     sheet(`<h3>${t('rwWant')}</h3>
       <div class="field"><label>${t('rwWhat')}</label><input id="rt" placeholder="${t('rwWhatPh')}"></div>
@@ -1151,10 +1600,29 @@ function viewReward(){
       <button class="btn lime" id="a">${t('boxAgain')}</button><button class="btn ghost" id="b">${t('boxStop')}</button>`);
     D('sheet').querySelector('#a').onclick=()=>{closeSheet();setTimeout(()=>{render();D('box').click();},240);};
     D('sheet').querySelector('#b').onclick=()=>{closeSheet();render();};};
-  D('gt').onclick=()=>{S.set.gentle=!S.set.gentle;save();render();toast(S.set.gentle?t('tGentleOn'):t('tGentleOff'));};
-  D('view').querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.set.lang=b.dataset.l;ensureDefaultTasks();ensureDefaultRewards();save();render();});
 }
 
+/* ===================== 设置 ===================== */
+function viewSettings(){
+  D('view').innerHTML=`<div class="hero"><div class="ghost">⚙</div>
+    <h1>${t('settingsT')}</h1>
+    <div class="meta"><button class="backBtn" id="backBtn">← ${t('backBtn')}</button></div></div>
+  <div class="shead"><h2>${t('sectGeneral')}</h2></div>
+  <div class="sw"><div><b>${t('gentleT')}</b><em>${t('gentleD')}</em></div><div class="tog ${S.set.gentle?'on':''}" id="gt"><i></i></div></div>
+  <div class="field"><label>${t('langT')}</label><div class="seg" style="margin:6px 0 0;box-shadow:none;padding:0;background:transparent">
+    <button class="${LI()?'':'on'}" data-l="zh">中文</button><button class="${LI()?'on':''}" data-l="en">English</button></div></div>
+  <div class="shead"><h2>${t('sectData')}</h2></div>
+  <div class="field"><label>${t('dataT')}</label>
+    <div style="font-size:13px;line-height:1.6;color:var(--sub);font-weight:500;margin-bottom:12px">${t('dataD')}</div>
+    <button class="btn lime" id="expBtn" style="margin-bottom:10px">${t('dataExport')}</button>
+    <button class="btn" id="impBtn">${t('dataImport')}</button>
+  </div>`;
+  D('backBtn').onclick=()=>{tab=_prevTab||'today';render();window.scrollTo(0,0);};
+  D('gt').onclick=()=>{S.set.gentle=!S.set.gentle;save();render();toast(S.set.gentle?t('tGentleOn'):t('tGentleOff'));};
+  D('view').querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.set.lang=b.dataset.l;ensureDefaultTasks();ensureDefaultRewards();save();render();});
+  D('expBtn').onclick=exportData;
+  D('impBtn').onclick=importData;
+}
 /* ===================== 战报：周 / 季 / 年 ===================== */
 function weekKeyOf(k){const d=dateOf(k);d.setDate(d.getDate()-((d.getDay()+6)%7));return todayKey(d);}
 function quarterStart(){const d=new Date();return todayKey(new Date(d.getFullYear(),Math.floor(d.getMonth()/3)*3,1));}
@@ -1235,7 +1703,8 @@ function maybeArchiveWeek(){
   if(S.lastWeek===lastMon)return;
   const r=rangeStats(lastMon,dayAdd(lastMon,6));
   if(r.tot>0){S.history.push({week:lastMon,rate:r.rate,txt:verdict('week',r.rate,r.dn)});
-    setTimeout(()=>toast(t('tWeekly')),1400);}
+    setTimeout(()=>toast(t('tWeekly')),1400);
+    maybeKingPigeon(r.rate);}
   S.lastWeek=lastMon;save();
 }
 
@@ -1245,24 +1714,31 @@ function renderNav(){
   D('nav').innerHTML=ks.map((k,i)=>`<button class="${tab===k?'on':''}" data-t="${k}"><i>${ic[i]}</i>${names[i]}</button>`).join('');
   D('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render();window.scrollTo(0,0);});
 }
+let _prevTab='today';
 function render(){
   document.documentElement.lang=LI()?'en':'zh-CN';
   renderNav();
   if(tab!=='today') stopRoastTicker();
-  if(tab==='today')viewToday();else if(tab==='board')viewBoard();else if(tab==='reward')viewReward();else viewReport();
+  if(tab==='today')viewToday();
+  else if(tab==='board')viewBoard();
+  else if(tab==='reward')viewReward();
+  else if(tab==='settings')viewSettings();
+  else viewReport();
   D('fab').style.display=tab==='today'?'grid':'none';
+  D('settingsBtn').style.display=tab==='settings'?'none':'grid';
 }
 function sheet(html){const s=D('sheet');s.innerHTML='<div class="grab"></div>'+html;s.classList.add('on');D('scrim').classList.add('on');}
 function closeSheet(){D('sheet').classList.remove('on');D('scrim').classList.remove('on');}
 D('scrim').onclick=closeSheet;
 D('fab').onclick=()=>openAdd(null);
+D('settingsBtn').onclick=()=>{if(tab!=='settings'){_prevTab=tab;tab='settings';render();window.scrollTo(0,0);}};
 
 (async function init(){
   const raw=await sGet(KEY);
   if(raw){try{const o=JSON.parse(raw);S=Object.assign(defaults(),o);S.set=Object.assign(defaults().set,o.set||{});S.streak=Object.assign({cur:0,best:0,noticed:null},o.streak||{});}catch(e){}}
   ensureDefaultTasks();
   recomputeStreak();maybeArchiveWeek();render();
-  if(S.set.public)sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,ts:Date.now()}),true);
+  if(S.set.public)sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵',ts:Date.now()}),true);
 })();
 </script>
 </body>
