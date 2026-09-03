@@ -116,6 +116,16 @@ input,textarea{font-family:inherit;font-size:15px;color:var(--ink)}
 .stepper{display:flex;align-items:center;gap:16px}
 .stepper button{width:44px;height:44px;border-radius:16px;background:var(--soft);font-size:22px;display:grid;place-items:center}
 .stepper .v{font-size:38px;font-weight:800;letter-spacing:-.05em;min-width:70px;text-align:center}
+.stepper .vinp{font-size:38px;font-weight:800;letter-spacing:-.05em;width:110px;text-align:center;background:transparent;border:0;outline:0;color:var(--ink);padding:0;font-family:inherit;flex:1;min-width:0}
+.stepper .vinp:focus{color:var(--limeDeep)}
+.stepper button{transition:transform .1s,background .15s}
+.stepper button:active{background:var(--lime);transform:scale(.94)}
+.iconRow{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:14px 18px;margin-bottom:12px}
+.iconBtn{width:52px;height:52px;flex:0 0 52px;border-radius:16px;background:var(--soft);font-size:26px;display:grid;place-items:center;transition:transform .15s,background .15s}
+.iconBtn:active{transform:scale(.94);background:var(--lime)}
+.iconLbl b{display:block;font-size:14px;font-weight:700}
+.iconLbl em{display:block;font-style:normal;font-size:12px;color:var(--sub);margin-top:2px}
+.iconpick:active{transform:scale(.94)}
 .picwrap{position:relative;margin-bottom:12px}
 .picwrap img{width:100%;border-radius:22px;display:block;box-shadow:var(--sh)}
 .picwrap .rm{position:absolute;top:10px;right:10px;background:rgba(14,16,19,.72);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px}
@@ -970,7 +980,7 @@ async function openCheckin(x){
   const up=`<label class="upload"><span class="p">📷</span><span>${t('ckPhoto')}</span><input type="file" accept="image/*" id="file" style="display:none"></label>`;
   sheet(`<h3>${x.icon} ${esc(x.title)}</h3>
   ${x.type==='count'?`<div class="field"><label>${t('ckCount',esc(x.unit||''),x.target)}</label>
-    <div class="stepper"><button id="mi">−</button><div class="v" id="cv">${l.count||0}</div><button id="pl">+</button>
+    <div class="stepper"><button id="mi">−</button><input type="text" inputmode="numeric" pattern="[0-9]*" class="vinp" id="cv" value="${l.count||0}"><button id="pl">+</button>
     <button class="chip" id="full" style="margin-left:auto">${t('ckFull')}</button></div></div>`:''}
   <div class="field"><label>${t('ckNote')}</label><textarea id="note" placeholder="${t('ckNotePh')}">${esc(l.note||'')}</textarea></div>
   <div id="picbox">${img?`<div class="picwrap"><img src="${img}"><button class="rm" id="rmpic">×</button></div>`:up}</div>
@@ -978,9 +988,15 @@ async function openCheckin(x){
   ${dn?`<button class="btn ghost" id="undo">${t('ckUndo')}</button>`:''}
   <button class="btn ghost" id="edit">${t('ckEdit')}</button>`);
   const H=D('sheet');let cv=l.count||0;
-  const upd=()=>{const e=H.querySelector('#cv');if(e)e.textContent=cv;};
-  H.querySelector('#mi')&&(H.querySelector('#mi').onclick=()=>{cv=Math.max(0,cv-stepOf(x));upd();});
-  H.querySelector('#pl')&&(H.querySelector('#pl').onclick=()=>{cv+=stepOf(x);upd();});
+  const upd=()=>{const e=H.querySelector('#cv');if(e)e.value=cv;};
+  const inp=H.querySelector('#cv');
+  if(inp){
+    inp.addEventListener('input',()=>{cv=Math.max(0,parseInt(inp.value.replace(/[^\d]/g,''))||0);});
+    inp.addEventListener('focus',()=>inp.select());
+  }
+  const mi=H.querySelector('#mi'), pl=H.querySelector('#pl');
+  if(mi) attachHoldRepeat(mi,()=>{cv=Math.max(0,cv-stepOf(x));upd();});
+  if(pl) attachHoldRepeat(pl,()=>{cv+=stepOf(x);upd();});
   H.querySelector('#full')&&(H.querySelector('#full').onclick=()=>{cv=x.target;upd();});
   const bindF=()=>{const f=H.querySelector('#file');if(!f)return;
     f.onchange=async e=>{const file=e.target.files[0];if(!file)return;toast(t('tShrink'));img=await shrink(file);
@@ -1014,11 +1030,15 @@ function reward(x,pts,note,img){
 }
 
 /* ===================== 添加 / 编辑 ===================== */
-function openAdd(edit){
-  const e=edit||{};
-  sheet(`<h3>${edit?t('editTask'):t('newTask')}</h3>
-  ${edit?'':`<button class="mic" id="mic"><span>🎙</span><span id="micT">${t('micIdle')}</span></button>
+function openAdd(editIn){
+  const isEdit = !!(editIn && editIn.id);
+  const edit = isEdit ? editIn : null;
+  const e = editIn || {};
+  const initIcon = e.icon || (e.title ? iconFor(e.title) : '🎯');
+  sheet(`<h3>${isEdit?t('editTask'):t('newTask')}</h3>
+  ${isEdit?'':`<button class="mic" id="mic"><span>🎙</span><span id="micT">${t('micIdle')}</span></button>
   <div class="chips">${PRESET.map((p,i)=>`<button class="chip" data-p="${i}">${p.i} ${p.n[LI()]}</button>`).join('')}</div>`}
+  <div class="iconRow"><button class="iconBtn" id="ibn">${initIcon}</button><div class="iconLbl"><b>${LI()?'Icon':'图标'}</b><em>${LI()?'Tap to change':'点一下换'}</em></div></div>
   <div class="field"><label>${t('fWhat')}</label><input id="ti" placeholder="${t('fWhatPh')}" value="${esc(e.title||'')}"></div>
   <div class="row"><div class="field"><label>${t('fTime')}</label><input id="tm" type="time" value="${e.time||''}"></div>
   <div class="field"><label>${t('fGoal')}</label><input id="tg" inputmode="numeric" placeholder="${t('fGoalPh')}" value="${e.target||''}"></div></div>
@@ -1032,12 +1052,38 @@ function openAdd(edit){
     <div class="chips" id="dw" style="margin:6px 0 0">
     ${T.wd[LI()].map((w,i)=>`<button class="chip ${(e.days||[]).includes(i)?'on':''}" data-d="${i}">${LI()?w:w[1]}</button>`).join('')}
   </div></div>
-  <button class="btn lime" id="sv">${edit?t('fSave'):t('fAdd')}</button>
-  ${edit?`<button class="btn ghost" id="del">${t('fDel')}</button>`:''}`);
+  <button class="btn lime" id="sv">${isEdit?t('fSave'):t('fAdd')}</button>
+  ${isEdit?`<button class="btn ghost" id="del">${t('fDel')}</button>`:''}`);
   const H=D('sheet');
+  let pickedIcon = e.icon || null;  // null 表示未手动选，会随 title 自动
+  const iconBtn = H.querySelector('#ibn');
+  iconBtn.onclick=()=>{
+    const curIc = iconBtn.textContent.trim();
+    // 保存现在表单状态到临时对象
+    const snap = {
+      title: H.querySelector('#ti').value,
+      time: H.querySelector('#tm').value,
+      target: H.querySelector('#tg').value,
+      unit: H.querySelector('#un').value,
+      days: [...H.querySelectorAll('#dw .chip.on')].map(c=>+c.dataset.d),
+      icon: curIc
+    };
+    openIconPicker(curIc, chosen=>{
+      // 关闭 picker 后重开 add，传入 snap
+      closeSheet();
+      setTimeout(()=>{
+        const restore = Object.assign({}, edit||{}, snap);
+        if(chosen) restore.icon = chosen;
+        // 打开 openAdd，但用 restore 作为 edit
+        openAdd(isEdit ? Object.assign(editIn, restore) : restore);
+        // 如果 chosen 是 null（取消），也重开一次保住表单状态
+      }, 200);
+    });
+  };
   const setV=o=>{H.querySelector('#ti').value=o.title;H.querySelector('#tm').value=o.time||'';
     H.querySelector('#tg').value=o.target||'';H.querySelector('#un').value=o.unit||'';
-    H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',(o.days||[0,1,2,3,4,5,6]).includes(+c.dataset.d)));};
+    H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',(o.days||[0,1,2,3,4,5,6]).includes(+c.dataset.d)));
+    if(o.icon) iconBtn.textContent=o.icon;};
   const updateShortcuts=()=>{
     const on=[...H.querySelectorAll('#dw .chip.on')].map(c=>+c.dataset.d).sort();
     H.querySelector('#allD').classList.toggle('on', on.length===7);
@@ -1051,9 +1097,15 @@ function openAdd(edit){
   H.querySelector('#wnD').onclick=()=>setDays([0,6]);
   updateShortcuts();
   H.querySelectorAll('.chip[data-p]').forEach(c=>c.onclick=()=>{const p=PRESET[+c.dataset.p];
-    setV({title:p.n[LI()],time:p.time,target:p.target,unit:p.unit[LI()],days:[0,1,2,3,4,5,6]});});
+    setV({title:p.n[LI()],time:p.time,target:p.target,unit:p.unit[LI()],days:[0,1,2,3,4,5,6],icon:p.i});});
   const ti=H.querySelector('#ti');
-  ti.addEventListener('blur',()=>{if(edit||ti.value.trim().length<5)return;const p=parseTask(ti.value);
+  ti.addEventListener('blur',()=>{
+    // 无论新旧任务，只要没手动选图标，就跟着 title 自动
+    if(ti.value.trim() && !pickedIcon){
+      iconBtn.textContent = iconFor(ti.value);
+    }
+    if(edit||ti.value.trim().length<5)return;
+    const p=parseTask(ti.value);
     if(!H.querySelector('#tm').value&&p.time)H.querySelector('#tm').value=p.time;
     if(!H.querySelector('#tg').value&&p.target){H.querySelector('#tg').value=p.target;H.querySelector('#un').value=p.unit||'';}
     if(p.days) H.querySelectorAll('#dw .chip').forEach(c=>c.classList.toggle('on',p.days.includes(+c.dataset.d)));
@@ -1072,13 +1124,13 @@ function openAdd(edit){
     const days=[...H.querySelectorAll('#dw .chip.on')].map(c=>+c.dataset.d);
     const tg=parseInt(H.querySelector('#tg').value)||0;
     const o={title,time:H.querySelector('#tm').value||'',target:tg,unit:H.querySelector('#un').value.trim(),
-      type:tg>0?'count':'bool',days:days.length?days:[0,1,2,3,4,5,6],icon:iconFor(title)};
-    if(edit){Object.assign(edit,o);toast(t('tSaved'));}
+      type:tg>0?'count':'bool',days:days.length?days:[0,1,2,3,4,5,6],icon:iconBtn.textContent.trim()||iconFor(title)};
+    if(isEdit){Object.assign(edit,o);toast(t('tSaved'));}
     else{S.tasks.push(Object.assign({id:'t'+Date.now().toString(36),start:todayKey(),arch:false},o));
       const nextMsg=nextOccurrenceMsg(o.days);
       toast(nextMsg || (S.set.gentle?t('tAddedG'):t('tAdded')));}
     save();closeSheet();render();};
-  H.querySelector('#del')&&(H.querySelector('#del').onclick=()=>{edit.arch=true;save();closeSheet();render();toast(t('tDel'));});
+  H.querySelector('#del')&&(H.querySelector('#del').onclick=()=>{if(edit){edit.arch=true;}save();closeSheet();render();toast(t('tDel'));});
 }
 
 /* ===================== 排行榜 ===================== */
@@ -1186,6 +1238,55 @@ function attachLongPress(el, longCb, tapCb, ignoreFn){
     if(ignoreFn && ignoreFn(ev)) return;
     if(tapCb) tapCb(ev);
   });
+}
+const TASK_ICONS = ['🎯','💧','🍎','🥗','🍞','☕','🍵','🍷','🥛','💊','🧘','🧎','🕉️','🙏',
+  '🏃','🚶','🚴','🏊','🏋️','💪','⚽','🏀','🎾','🏸','🎳','⛹️','🤸','🧗','⛷️','🏂',
+  '📚','📖','📝','✏️','🎓','💻','⌨️','🖥️','📱','🔬','📊','📈','🔤','🗣️','🎨','🎸',
+  '🎹','🎤','🎬','📷','🎭','🎮','😴','🛌','🛁','🧖','🧹','🧼','🧺','🍳','🥘','🍚',
+  '💰','💵','📉','🌱','🌿','🌳','🌸','🍀','🌻','🌈','⏰','🚫','⚡','🔥','✨','🎁',
+  '💌','📧','📞','🔔','⭐','💎','👑','🏆','🥇','🎖️','🕊️','🐦','🐔','🐣','☀️','🌙'];
+function openIconPicker(cur, cb){
+  sheet(`<h3>${LI()?'Pick an icon':'选个图标'}</h3>
+    <p class="hint" style="margin-top:-8px">${LI()?"Long-press the icon in the task sheet anytime to change.":"任务表里长按图标随时可以再改。"}</p>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px">
+      ${TASK_ICONS.map(e=>`<button class="iconpick" data-e="${e}" style="aspect-ratio:1;border-radius:16px;background:${e===cur?'var(--lime)':'var(--card)'};box-shadow:var(--sh);font-size:26px;display:grid;place-items:center">${e}</button>`).join('')}
+    </div>
+    <button class="btn ghost" id="icClose">${LI()?'Cancel':'取消'}</button>`);
+  D('sheet').querySelector('#icClose').onclick=()=>cb(null);
+  D('sheet').querySelectorAll('.iconpick').forEach(b=>b.onclick=()=>cb(b.dataset.e));
+}
+function attachHoldRepeat(btn, action){
+  let holdTimer=null, rapidTimer=null, tickCount=0;
+  const start = e => {
+    e.preventDefault && e.preventDefault();
+    action(); tickCount=1;
+    holdTimer = setTimeout(()=>{
+      // 300ms后开始快速
+      rapidTimer = setInterval(()=>{
+        action(); tickCount++;
+        if(tickCount > 15 && rapidTimer){
+          clearInterval(rapidTimer);
+          // 加速阶段
+          rapidTimer = setInterval(()=>{action();tickCount++;},50);
+          if(tickCount > 40){
+            clearInterval(rapidTimer);
+            rapidTimer = setInterval(()=>{action();tickCount++;},25);
+          }
+        }
+      }, 110);
+    }, 350);
+  };
+  const stop = () => {
+    if(holdTimer){clearTimeout(holdTimer);holdTimer=null;}
+    if(rapidTimer){clearInterval(rapidTimer);rapidTimer=null;}
+    tickCount=0;
+  };
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('touchstart', start, {passive:false});
+  btn.addEventListener('mouseup', stop);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('touchend', stop);
+  btn.addEventListener('touchcancel', stop);
 }
 function attachSwipe(wrap, onDelete){
   const card = wrap.querySelector('.task, .rw');
