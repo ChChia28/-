@@ -771,8 +771,35 @@ const LI=()=>S.set.lang==='en'?1:0;
 function t(k,...a){let s=T[k][LI()];a.forEach((v,i)=>{s=s.split('{'+i+'}').join(v)});return s;}
 function pk(name,seed){return pick(POOL[name][LI()],seed);}
 function brain(seed){return pick(BRAIN,seed)[LI()];}
-async function sGet(k,sh){try{const r=await window.storage.get(k,!!sh);return r?r.value:null}catch(e){return mem[k]!==undefined?mem[k]:null}}
-async function sSet(k,v,sh){try{await window.storage.set(k,v,!!sh)}catch(e){mem[k]=v}}
+// —— 持久化：优先 Anthropic storage → 掉到 localStorage → 最后内存 ——
+async function sGet(k,sh){
+  try{const r=await window.storage.get(k,!!sh);return r?r.value:null}
+  catch(e){
+    try{const v=localStorage.getItem(k);return v!==null?v:(mem[k]!==undefined?mem[k]:null);}
+    catch(_){return mem[k]!==undefined?mem[k]:null;}
+  }
+}
+async function sSet(k,v,sh){
+  try{await window.storage.set(k,v,!!sh)}
+  catch(e){
+    try{localStorage.setItem(k,v);}
+    catch(_){mem[k]=v;}  // 私隐/无痕模式或超配额时退到内存
+  }
+}
+async function sDel(k,sh){
+  try{await window.storage.delete(k,!!sh)}catch(e){}
+  try{localStorage.removeItem(k);}catch(_){}
+  delete mem[k];
+}
+async function sList(prefix,sh){
+  try{const r=await window.storage.list(prefix,!!sh);if(r&&r.keys)return r;}catch(e){}
+  // localStorage 备份 —— shared 键在这里读不到（因为 localStorage 是每域每浏览器独立）
+  try{
+    const keys=[];
+    for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(prefix)===0)keys.push(k);}
+    return {keys};
+  }catch(_){return {keys:[]};}
+}
 let sv;function save(){clearTimeout(sv);sv=setTimeout(()=>sSet(KEY,JSON.stringify(S)),250);}
 function toast(m){const x=D('toast');x.textContent=m;x.classList.add('on');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('on'),2800);}
 
@@ -1145,7 +1172,7 @@ async function viewBoard(){
   let rows=botScores();
   rows.push({name:S.set.name||(LI()?'You':'我'),av:S.set.avatar||'🫵',pts:S.points,me:true,streak:S.streak.cur});
   if(S.set.public){try{
-    const r=await window.storage.list('dglb:',true);
+    const r=await sList('dglb:',true);
     for(const k of (r&&r.keys||[]).filter(x=>x!=='dglb:'+S.uid).slice(0,18)){
       const g=await sGet(k,true);if(!g)continue;const o=JSON.parse(g);
       if(o&&o.name)rows.push({name:o.name,av:o.avatar||'🙂',pts:o.pts|0,streak:o.streak|0,real:true});}
@@ -1174,7 +1201,7 @@ async function viewBoard(){
   D('pub').onclick=async()=>{S.set.public=!S.set.public;
     if(S.set.public){S.set.name=D('nm').value.trim()||(LI()?'Anonymous':'匿名选手');
       await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵',ts:Date.now()}),true);toast(t('onBoard'));}
-    else{try{await window.storage.delete('dglb:'+S.uid,true)}catch(e){}toast(t('offBoard'));}
+    else{await sDel('dglb:'+S.uid,true);toast(t('offBoard'));}
     save();render();};
   D('nm').onchange=ev=>{S.set.name=ev.target.value.trim();save();};
 }
@@ -1592,7 +1619,7 @@ function ensureDefaultRewards(){
 async function exportData(){
   const images={};
   try{
-    const r=await window.storage.list('dg_img_',false);
+    const r=await sList('dg_img_',false);
     for(const k of (r&&r.keys)||[]){
       const v=await sGet(k);
       if(v) images[k]=v;
