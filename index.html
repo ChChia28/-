@@ -802,7 +802,12 @@ async function sList(prefix,sh){
     return {keys};
   }catch(_){return {keys:[]};}
 }
-let sv;function save(){clearTimeout(sv);sv=setTimeout(()=>sSet(KEY,JSON.stringify(S)),250);}
+let sv,_boardSync;function save(){clearTimeout(sv);sv=setTimeout(()=>sSet(KEY,JSON.stringify(S)),250);
+  clearTimeout(_boardSync);
+  _boardSync = setTimeout(()=>{
+    if(S.set.public) pushBoard({uid:S.uid,name:S.set.name||'匿名',pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵'});
+  }, 800);
+}
 function toast(m){const x=D('toast');x.textContent=m;x.classList.add('on');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('on'),2800);}
 
 /* ===================== 解析 ===================== */
@@ -1173,12 +1178,15 @@ async function viewBoard(){
     <div class="meta">${t('boardSub')}</div></div><div id="lb"><div class="loading"><div class="loadPigeon">${PIGEON.walkSide}</div><div class="loadTxt">${LI()?'On the way...':'在路上……'}</div></div></div>`;
   let rows=botScores();
   rows.push({name:S.set.name||(LI()?'You':'我'),av:S.set.avatar||'🫵',pts:S.points,me:true,streak:S.streak.cur});
-  if(S.set.public){try{
-    const r=await sList('dglb:',true);
-    for(const k of (r&&r.keys||[]).filter(x=>x!=='dglb:'+S.uid).slice(0,18)){
-      const g=await sGet(k,true);if(!g)continue;const o=JSON.parse(g);
-      if(o&&o.name)rows.push({name:o.name,av:o.avatar||'🙂',pts:o.pts|0,streak:o.streak|0,real:true});}
-  }catch(e){}}
+  if(S.set.public){
+    const users = await fetchBoard();
+    if(users){
+      for(const o of users){
+        if(!o || !o.uid || o.uid===S.uid || !o.name) continue;
+        rows.push({name:o.name, av:o.avatar||'🙂', pts:o.pts|0, streak:o.streak|0, real:true});
+      }
+    }
+  }
   rows.sort((a,b)=>b.pts-a.pts);
   const my=rows.findIndex(r=>r.me)+1,top=rows.slice(0,3),rest=rows.slice(3);
   const taunt=S.set.gentle?(LI()?`You're #${my}. Compare with yourself, that's enough.`:`你排在第 ${my} 名，和自己比就够了。`)
@@ -1201,9 +1209,14 @@ async function viewBoard(){
   D('lb').innerHTML=h;
   D('avBtn')&&(D('avBtn').onclick=openAvatarPicker);
   D('pub').onclick=async()=>{S.set.public=!S.set.public;
-    if(S.set.public){S.set.name=D('nm').value.trim()||(LI()?'Anonymous':'匿名选手');
-      await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵',ts:Date.now()}),true);toast(t('onBoard'));}
-    else{await sDel('dglb:'+S.uid,true);toast(t('offBoard'));}
+    if(S.set.public){
+      S.set.name=D('nm').value.trim()||(LI()?'Anonymous':'匿名选手');
+      const ok = await pushBoard({uid:S.uid,name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵'});
+      toast(ok ? t('onBoard') : (LI()?'Server unreachable, retrying later.':'服务器连不上，稍后自动重试。'));
+    } else {
+      await removeBoard(S.uid);
+      toast(t('offBoard'));
+    }
     save();render();};
   D('nm').onchange=ev=>{S.set.name=ev.target.value.trim();save();};
 }
@@ -1582,7 +1595,7 @@ function openAvatarPicker(){
   D('sheet').querySelector('#cav').onclick=closeSheet;
   D('sheet').querySelectorAll('.avpick').forEach(b=>b.onclick=async()=>{
     S.set.avatar=b.dataset.a; save();
-    if(S.set.public) await sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar,ts:Date.now()}),true);
+    if(S.set.public) await pushBoard({uid:S.uid,name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar});
     closeSheet();render();
   });
 }
@@ -1868,7 +1881,7 @@ D('settingsBtn').onclick=()=>{if(tab!=='settings'){_prevTab=tab;tab='settings';r
   if(raw){try{const o=JSON.parse(raw);S=Object.assign(defaults(),o);S.set=Object.assign(defaults().set,o.set||{});S.streak=Object.assign({cur:0,best:0,noticed:null},o.streak||{});}catch(e){}}
   ensureDefaultTasks();
   recomputeStreak();maybeArchiveWeek();render();
-  if(S.set.public)sSet('dglb:'+S.uid,JSON.stringify({name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵',ts:Date.now()}),true);
+  if(S.set.public) pushBoard({uid:S.uid,name:S.set.name,pts:S.points,streak:S.streak.cur,avatar:S.set.avatar||'🫵'});
 })();
 </script>
 </body>
